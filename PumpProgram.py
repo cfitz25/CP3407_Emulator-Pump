@@ -10,7 +10,7 @@ class PumpProgram:
     last_injection = (0,0)
     messages = []
     MAX_MESSAGES = 5
-    current_message = 0
+    message_ind = 0
     sugar_level = 0
     reservoir_level = 0
     total_insulin_today = 0
@@ -44,7 +44,16 @@ class PumpProgram:
         displayWrite("left:\r\n"+str(self.sugar_level)+"mL", self.DISPPOS_SUGAR)
         displayWrite("total:\r\n"+str(self.sugar_level)+"mL", self.DISPPOS_SUGAR)
         displayWrite("battery:\r\n"+str(self.sugar_level)+"%", self.DISPPOS_SUGAR)
-        displayWrite("last injection:\r\n"+str(self.sugar_level)+"mL\r\n("+str(time.), self.DISPPOS_SUGAR)
+        write_string = "last injection:\r\n"
+        if(self.last_injection[0] != -1):
+            write_sring += str(self.last_injection[1])+"mL\r\n("+str(getTimeString(self.last_injection[0]))+")"
+        else:
+            write_sring += "--mL\r\n()"
+        displayWrite(write_string, self.DISPPOS_SUGAR)
+        write_string = "("
+        if(len(self.messages) > 0):
+            time,message = self.messages[self.message_ind]
+            
         displayWrite("sugar:\r\n"+str(self.sugar_level)+" cc/L", self.DISPPOS_SUGAR)
         return
     def loop30Second(self):
