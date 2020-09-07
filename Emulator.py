@@ -1,3 +1,22 @@
+import time
+start_time = time.time()
+last_time = 0
+TIME_NOW = 0
+time_multiplier = 10
+def getTime():
+    global TIME_NOW
+    global last_time
+    #modified time so its all relative to the start of the program, makes it easier to read and understand
+    original_time = (time.time()-start_time)
+    #get the time difference between last time and this time, then set the new last_time
+    tmp_time = (original_time-last_time)
+    last_time = original_time
+    #apply multiplier to allow for faster simulation rate
+    tmp_time *= time_multiplier
+    #add modified time difference to TIME_NOW as it represents the emulators time
+    TIME_NOW = TIME_NOW + tmp_time
+    
+    return TIME_NOW
 class Emulator:
     #Emulator -> Program
     #returns conductivity of blood sensor (INT)
