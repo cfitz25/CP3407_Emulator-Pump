@@ -5,6 +5,8 @@ last_time = 0
 TIME_NOW = 0
 time_multiplier = 5
 
+display_print = True
+
 button_state = False
 needle_connected = False
 needle_conductivity = 0
@@ -28,9 +30,7 @@ def getTime():
     TIME_NOW = TIME_NOW + tmp_time
     
     return TIME_NOW
-def setTimeMultiplier(val):
-    global time_multiplier
-    time_multiplier = val
+
 def getDatetime(time):
     dt = datetime.datetime.fromtimestamp(time+start_time)
     return dt
@@ -91,5 +91,6 @@ def alarmSetState(state):
     return False
 #write text to the display at position (x,y)
 def displayWrite(text,pos):
-    print("Display: "+str(text))
+    if(display_print):
+        print("Display: "+str(text))
     return False
