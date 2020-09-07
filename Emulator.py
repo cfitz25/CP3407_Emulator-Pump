@@ -3,7 +3,7 @@ import datetime
 start_time = time.time()
 last_time = 0
 TIME_NOW = 0
-time_multiplier = 10
+time_multiplier = 5
 def getTime():
     global TIME_NOW
     global last_time
@@ -22,7 +22,7 @@ def setTimeMultiplier(val):
     global time_multiplier
     time_multiplier = val
 def getDatetime(time):
-    dt = datetime.fromtiestamp(time+start_time)
+    dt = datetime.datetime.fromtimestamp(time+start_time)
     return dt
 #Emulator -> Program
 #returns conductivity of blood sensor (INT)
