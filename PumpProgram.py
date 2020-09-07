@@ -72,22 +72,39 @@ class PumpProgram:
         return
     def loop30Second(self):
         print("LOOP 30 SEC: ",getTime())
-        #check if the blood sensor is working
+        #check if the blood sensor is working, log error if not
         selfTestBloodSensor()
         blood_result = bloodSensorFunctional()
-        #check if the pump is working
+        if(not blood_result):
+            self.logIssue("Sensor Test Failed.")
+        #check if the pump is working, log error if not
         selfTestPump()
         pump_result = pumpFunctional()
-        #check if the needle is connected
-        needle_connected = needleConnected()
-        #check if reservoir is connected
-        reservoir_connected = reservoirConnected()
+        if(not pump_result):
+            self.logIssue("Pump Test Failed.")
+        #check if the needle is connected, log error if not
+        needle_result = needleConnected()
+        if(not needle_result):
+            self.logIssue("Needle not connected.")
+        #check if reservoir is connected, log error if not
+        reservoir_result = reservoirConnected()
+        if(not reservoir_result):
+            self.logIssue("Reservoir not connected.")
 
-
+        #if any issue occurs then alarm the user
+        if(not blood_result or not pump_result or not needle_result or not reservoir_result):
+            alarmSetState(True)
+            time.sleep(0.5)
+            alarmSetState(False)
         return
     def loop10Minute(self):
         print("LOOP 10 MIN: ",getTime())
         return
+    def logIssue(self,issue):
+        self.messages.append((getTime(),issue))
+        if(len(self.messages) >= self.MAX_MESSAGES):
+            self.messages.pop(0)
+        return True
 p = PumpProgram()
 setTimeMultiplier(5)
 p.mainLoop()
