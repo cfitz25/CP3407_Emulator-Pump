@@ -4,6 +4,16 @@ start_time = time.time()
 last_time = 0
 TIME_NOW = 0
 time_multiplier = 5
+
+button_state = False
+needle_connected = False
+needle_conductivity = 0
+battery_voltage = 5
+pump_functional = False
+sensor_functional = False
+reservoir_level = 0
+reservoir_connected = False
+blood_conductivity = 0
 def getTime():
     global TIME_NOW
     global last_time
@@ -27,45 +37,59 @@ def getDatetime(time):
 #Emulator -> Program
 #returns conductivity of blood sensor (INT)
 def getConductivity():
-    return 0
+    print("Blood Conductivity: "+str(blood_conductivity))
+    return blood_conductivity
 #returns if the reservoir is connected (BOOL)
 def reservoirConnected():
-    return False
+    print("Reservoir Connected: "+str(reservoir_connected))
+    return reservoir_connected
 #returns the level of the reservoir (INT)
 def reservoirLevel():
-    return 0
+    print("Reservoir Level: "+str(reservoir_level))
+    return reservoir_level
 #returns the results of the blood sensor self test (BOOL)
 def bloodSensorFunctional():
-    return False
+    print("Blood Sensor Functional: "+str(sensor_functional))
+    return sensor_functional
 #returns the result of the pump self test (BOOL)
 def pumpFunctional():
-    return False
+    print("Pump Functional: "+str(pump_functional))
+    return pump_functional
 #returns the voltage of the battery (INT)
 def batteryVoltage():
-    return 0
+    print("Battery Voltage: "+str(battery_voltage))
+    return battery_voltage
 #returns the conductivity of the liquid in the needle (INT)
 def needleInternalConductivity():
-    return 0
+    print("Needle Conductivity: "+str(needle_conductivity))
+    return needle_conductivity
 #returns if the needle is connected (BOOL)
 def needleConnected():
-    return False
+    print("Needle Connected: "+str(needle_connected))
+    return needle_connected
 #returns the state of the manual button
 def manualButton():
+    print("Manual Button State: "+str(button_state))
     return False
 
 #Program -> Emulator
 #starts a self test of the pump
 def selfTestPump():
+    print("Self Test Pump started.")
     return False
 #starts a self test of the blood sensor
 def selfTestBloodSensor():
+    print("Self Test Sensor started.")
     return False
 #makes the pump inject 10mL of insulin
 def activatePump():
+    print("Pump Activated.")
     return False
 #sets the state of the alarm
 def alarmSetState(state):
+    print("Alarm: "+str(state))
     return False
 #write text to the display at position (x,y)
 def displayWrite(text,pos):
+    print("Display: "+str(text))
     return False
