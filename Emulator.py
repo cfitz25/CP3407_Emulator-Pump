@@ -17,6 +17,9 @@ def getTime():
     TIME_NOW = TIME_NOW + tmp_time
     
     return TIME_NOW
+def setTimeMultiplier(val):
+    global time_multiplier
+    time_multiplier = val
 class Emulator:
     #Emulator -> Program
     #returns conductivity of blood sensor (INT)
