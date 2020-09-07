@@ -53,9 +53,9 @@ class PumpProgram:
         if(self.last_injection[0] != -1):
             dt = getDatetime(self.last_injection[0])
 
-            write_sring += str(self.last_injection[1])+"mL\r\n("+str(dt)+")"
+            write_string += str(self.last_injection[1])+"mL\r\n("+str(dt)+")"
         else:
-            write_sring += "--mL\r\n()"
+            write_string += "--mL\r\n()"
         displayWrite(write_string, self.DISPPOS_LAST_INJECT)
         write_string = "("
         #if messages exist then display it otherwise display dummy info
