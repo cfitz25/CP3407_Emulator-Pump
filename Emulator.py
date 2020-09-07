@@ -22,7 +22,7 @@ def setTimeMultiplier(val):
     global time_multiplier
     time_multiplier = val
 def getTimeString(time):
-    dt = datetime.fromtiestamp(time)
+    dt = datetime.fromtiestamp(time+start_time)
     return str(dt)
 #Emulator -> Program
 #returns conductivity of blood sensor (INT)
