@@ -14,7 +14,7 @@ class PumpProgram:
     sugar_level = 0
     reservoir_level = 0
     total_insulin_today = 0
-    battery_level = 0
+    battery_level = 2
 
     def __init__(self):
         return
@@ -106,8 +106,6 @@ class PumpProgram:
             self.messages.pop(0)
         return True
 p = PumpProgram()
-global time_multiplier
-time_multiplier = 5
-global display_print
-display_print = False
+setTimeMultiplier(5)
+setDisplayPrint(False)
 p.mainLoop()

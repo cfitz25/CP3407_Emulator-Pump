@@ -30,7 +30,12 @@ def getTime():
     TIME_NOW = TIME_NOW + tmp_time
     
     return TIME_NOW
-
+def setTimeMultiplier(val):
+    global time_multiplier
+    time_multiplier = val
+def setDisplayPrint(val):
+    global display_print
+    display_print = val
 def getDatetime(time):
     dt = datetime.datetime.fromtimestamp(time+start_time)
     return dt
