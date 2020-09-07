@@ -14,7 +14,7 @@ class PumpProgram:
     sugar_level = 0
     reservoir_level = 0
     total_insulin_today = 0
-    battery_level = 0
+    battery_level = 1
 
     def __init__(self):
         return
