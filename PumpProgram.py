@@ -66,7 +66,7 @@ class PumpProgram:
             if(self.message_ind >= len(self.messages)):
                 self.message_ind = 0
             dt = getDatetime(time)
-            write_string += str(datetime.time())+") "+str(message)
+            write_string += str(dt.time())+") "+str(message)
         else:
             write_string += ") ---------------"
         displayWrite(write_string, self.DISPPOS_MESSAGES)
