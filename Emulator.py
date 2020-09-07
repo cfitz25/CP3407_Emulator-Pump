@@ -1,4 +1,5 @@
 import time
+import datetime
 start_time = time.time()
 last_time = 0
 TIME_NOW = 0
@@ -20,7 +21,9 @@ def getTime():
 def setTimeMultiplier(val):
     global time_multiplier
     time_multiplier = val
-
+def getTimeString(time):
+    dt = datetime.fromtiestamp(time+start_time)
+    return str(dt)
 #Emulator -> Program
 #returns conductivity of blood sensor (INT)
 def getConductivity():
@@ -64,5 +67,5 @@ def activatePump():
 def alarmSetState(state):
     return False
 #write text to the display at position (x,y)
-def displayWrite(text,x,y):
+def displayWrite(text,pos):
     return False
