@@ -15,8 +15,8 @@ class Emulator:
     #returns the result of the pump self test (BOOL)
     def pumpFunctional(self):
         return False
-    #returns the level of the battery (INT)
-    def batteryLevel(self):
+    #returns the voltage of the battery (INT)
+    def batteryVoltage(self):
         return 0
     #returns the conductivity of the liquid in the needle (INT)
     def needleInternalConductivity(self):
