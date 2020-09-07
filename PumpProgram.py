@@ -106,6 +106,6 @@ class PumpProgram:
             self.messages.pop(0)
         return True
 p = PumpProgram()
-setTimeMultiplier(30)
+setTimeMultiplier(5)
 setDisplayPrint(False)
 p.mainLoop()
