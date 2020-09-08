@@ -13,9 +13,33 @@ needle_conductivity = 0
 battery_voltage = 5
 pump_functional = False
 sensor_functional = False
-reservoir_level = 0
+reservoir_level = 100
 reservoir_connected = False
 blood_conductivity = 0
+insulin_count = 0
+blood_sugar = 0
+
+def bodyLoop(insulin_count=None, reservoir_level=None, blood_conductivity=None):
+    clock = 0
+    while clock < 6:
+            if pump_functional & reservoir_connected & sensor_functional & needle_connected:
+                insulin_count += 10
+                reservoir_level -= 10
+                blood_conductivity += insulin_count
+                blood_sugar = blood_conductivity / 10
+            if clock > 2:
+                needleConnected = False
+            time.sleep(1)
+            if not needleConnected:
+                print("Needle Disconnected!\n")
+                pumpFunctional = False
+            print(
+                str(blood_sugar) + " mmol/L \nInsulin Count:" + str(insulin_count) + "\nPump is Connected:" + str(
+                    pumpFunctional) + "\n")
+
+            clock += 1
+
+
 def getTime():
     global TIME_NOW
     global last_time
