@@ -21,11 +21,16 @@ class PumpProgram:
     total_insulin_today = 0
     #battery
     BATT_MAX_VOLTAGE = 3.3
-    BAT_MIN_VOLTAGE = 1.2
+    BATT_MIN_VOLTAGE = 1.2
     battery_level = 2
+    #reservoir
+    RESERVOIR_MIN_LEVEL = 10
+    reservoir_level = 0
+
+    #device info
+    DEVICE_MODEL = "Prototype_1"
     #other
     NEEDLE_EMPTY_CONDUCTIVITY = 20
-    reservoir_level = 0
     messages = []
     MAX_MESSAGES = 5
     message_ind = 0
@@ -100,7 +105,7 @@ class PumpProgram:
         else:
             write_string += ") ---------------"
         displayWrite(write_string, self.DISPPOS_MESSAGES)
-        return
+
     def loop30Second(self):
         print("LOOP 30 SEC: ",getTime())
 
@@ -130,19 +135,26 @@ class PumpProgram:
         if(needleInternalConductivity() > self.NEEDLE_EMPTY_CONDUCTIVITY):
             self.logIssue("Needle has a blockage.")
 
-        #check if the reservoir is leaking
+        #check if the reservoir is leaking and check if it needs replacing
         old_reservoir_level = self.reservoir_level
         self.reservoir_level = reservoirLevel()
         if(old_reservoir_level != self.reservoir_level):
             self.logIssue("Reservoir is leaking.")
 
+        if(self.reservoir_level < self.RESERVOIR_MIN_LEVEL):
+            self.logIssue("Reservoir is almost empty.")
+
         battery_voltage = batteryVoltage()
-        if(battery_voltage < self.BAT_MIN_VOLTAGE):
+        if(battery_voltage < self.BATT_MIN_VOLTAGE):
             self.logIssue("Battery voltage is low.")
 
         #do other non error things
         #get battery voltage
         self.battery_level = self.batteryVolt2Level(battery_voltage)
+
+        #log general device info
+        self.logDeviceInfo(self.battery_level,self.reservoir_level)
+
     def loop10Minute(self):
         print("LOOP 10 MIN: ",getTime())
 
@@ -206,8 +218,9 @@ class PumpProgram:
         reservoir_difference = current_reservoir_level-new_reservoir_level
 
         #log the amount of insulin injects and how much was meant to be, add the actual insulin given to the daily amount given
-        self.logInsulinInjected(reservoir_difference, insulin_steps*10)
+        self.logInsulinInjected(reservoir_difference, insulin_steps*10,False)
         self.total_insulin_today += reservoir_difference
+        self.last_injection = (getTime(),reservoir_difference)
 
         #check if the amount of insulin that was injected was how much that left the reservoir
         if(reservoir_difference != insulin_steps*10):
@@ -227,6 +240,8 @@ class PumpProgram:
         return True
     def logBloodSugar(self,blood_sugar):
         return
+    def logDeviceInfo(self,battery_level, reservoir_level):
+        return
     def conductivity2sugar(self,conductivity):
 
         #convert conductivity into blood sugar
@@ -238,7 +253,7 @@ class PumpProgram:
         res = sugar
         return res
     def batteryVolt2Level(self,volt):
-        res = (volt-self.BAT_MIN_VOLTAGE)/(self.BATT_MAX_VOLTAGE-self.BAT_MIN_VOLTAGE) * 100
+        res = (volt-self.BATT_MIN_VOLTAGE)/(self.BATT_MAX_VOLTAGE-self.BATT_MIN_VOLTAGE) * 100
         return res
 p = PumpProgram()
 setTimeMultiplier(5)
