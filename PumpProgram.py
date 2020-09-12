@@ -13,6 +13,9 @@ class PumpProgram:
     message_ind = 0
     blood_sugar_levels = []
     MAX_BLOOD_SUGAR = 3
+    SAFE_SUGAR_LEVEL = 20
+    UNSAGE_SUGAR_LEVEL = 40
+    NEEDLE_EMPTY_CONDUCTIVITY = 20
     reservoir_level = 0
     total_insulin_today = 0
     battery_level = 2
@@ -95,29 +98,73 @@ class PumpProgram:
         if(not reservoir_result):
             self.logIssue("Reservoir not connected.")
 
-        reservoir_level_result = reservoirLevel
-        #if any issue occurs then alarm the user
-        if(not blood_result or not pump_result or not needle_result or not reservoir_result):
-            alarmSetState(True)
-            time.sleep(0.5)
-            alarmSetState(False)
+        reservoir_level_result = reservoirLevel()
+
         return
     def loop10Minute(self):
         print("LOOP 10 MIN: ",getTime())
 
-
+        #get the conductivity and turn it into blood sugar
         conductivity = getConductivity()
-
         blood_sugar = self.conductivity2sugar(conductivity)
 
+        #add the sugar level to the list and remove the oldest value if the list is too long
+        self.blood_sugar_levels.append(blood_sugar)
+        if(len(self.blood_sugar_levels) >= self.MAX_BLOOD_SUGAR):
+            self.blood_sugar_levels.pop(0)
 
+        #send blood sugar to app
+        self.logBloodSugar(blood_sugar)
+
+        inject_insulin = False
+        #get change in blood sugar levels
+        rate_of_change1 = self.blood_sugar_levels[2]-self.blood_sugar_levels[1]
+        rate_of_change2 = self.blood_sugar_levels[1]-self.blood_sugar_levels[0]
+        #if blood sugar is above safe levels and the blood sugar level is increasing at an increasing rate then inject insulin
+        if(blood_sugar >= self.SAFE_SUGAR_LEVEL and rate_of_change1 > 0 and rate_of_change1 > rate_of_change2):
+            inject_insulin = True
+        #if blood sugar is above unsafe levels and the blood sugar is not decreasing at an increasing rate then inejct insulin
+        if(blood_sugar >= self.UNSAFE_SUGAR_LEVEL and not (rate_of_change1 < 0 and rate_of_change1 < rate_of_change2):
+            inject_insulin = True
         return
+
+        #if injection isnt needed then end the function
+        if(not inject_insulin):
+            return
+
+        #get the insulin amount and turn it into steps of 10mL, round if necessary
+        insulin_amount = self.sugar2insulin(blood_sugar)
+        insulin_steps = insulin_amount // 10
+        if(insulin_amount-insulin_steps*10 >= 5):
+            insulin_steps += 1
+        
+        #get the current reservoir level, used to check if the correct amount of insulin was injected
+        current_reservoir_level = reservoirLevel()
+
+        #inject the required amount of insulin
+        for i in insulin_steps:
+            activatePump()
+            time.sleep(0.5)
+
+        #check if the amount of insulin that was injected was how much that left the reservoir
+        if(current_reservoir_level != insulin_steps*10):
+            logIssue("Incorrect amount of insulin amount injected.")
+        #check to see if there is insulin or something else is in the needle
+        if(needleInternalConductivity() > self.NEEDLE_EMPTY_CONDUCTIVITY):
+            logIssue("Needle has a blockage.")
     def logIssue(self,issue):
         self.messages.append((getTime(),issue))
         if(len(self.messages) >= self.MAX_MESSAGES):
             self.messages.pop(0)
         #later add connection and send to app
+
+        #trigger alarm
+        alarmSetState(True)
+        time.sleep(0.5)
+        alarmSetState(False)
         return True
+    def logBloodSugar(self,blood_sugar):
+        return
     def conductivity2sugar(self,conductivity):
         #convert conductivity into blood sugar
         res = conductivity

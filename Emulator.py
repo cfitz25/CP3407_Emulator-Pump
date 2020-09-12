@@ -39,8 +39,6 @@ def setDisplayPrint(val):
 def getDatetime(time):
     dt = datetime.datetime.fromtimestamp(time+start_time)
     return dt
-
-    ``
 #Emulator -> Program
 #returns conductivity of blood sensor (INT)
 def getConductivity():
