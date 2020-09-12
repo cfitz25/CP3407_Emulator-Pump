@@ -41,6 +41,9 @@ class PumpProgram:
 
     def __init__(self,emulator):
         self.e = emulator
+        self.count_30 = 0
+        self.count_10_60 = 0
+        self.count_5 = 0
         return
     def start_server(self,port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -67,35 +70,32 @@ class PumpProgram:
         s.close()
         return True
     def mainLoop(self):
-        last_time_30s = self.e.getTime()
-        last_time_10min = last_time_30s
-        last_time_5s = last_time_30s
-        while True:
-            tmp_time = self.e.getTime()
-            try:
-                (clientsocket, address) = self.sock.accept()
-                self.recvProcess(clientsocket)
-            except:
-                p = 0
-            #run if it has been atleast 30 seconds since last run
-            if(tmp_time-last_time_5s >= 5):
-                last_time_5s = tmp_time
-                print("####################################")
-                self.loop5Second()
+        self.count_10_60 += 1
+        self.count_30 += 1
+        self.count_5 += 1
+        try:
+            (clientsocket, address) = self.sock.accept()
+            self.recvProcess(clientsocket)
+        except:
+            p = 0
+        #run if it has been atleast 30 seconds since last run
+        if(self.count_5 >= 5):
+            self.count_5 = 0
+            print("####################################")
+            self.loop5Second()
 
-            #run if it has been atleast 30 seconds since last run
-            if(tmp_time-last_time_30s >= 30):
-                last_time_30s = tmp_time
-                print("####################################")
-                self.loop30Second()
+        #run if it has been atleast 30 seconds since last run
+        if(self.count_30 >= 30):
+            count_30 = 0
+            print("####################################")
+            self.loop30Second()
 
-            #run if it has been atleast 10 minutes since last run or if a manual trigger has been activated
-            if(tmp_time-last_time_10min >= 10*60 or self.trigger_manual):
-                self.trigger_manual = False
-                last_time_10min = tmp_time
-                print("####################################")
-                self.loop10Minute()
-            time.sleep(1)
+        #run if it has been atleast 10 minutes since last run or if a manual trigger has been activated
+        if(self.count_10_60 >= 10*60 or self.trigger_manual):
+            self.trigger_manual = False
+            self.count_10_60 = 0
+            print("####################################")
+            self.loop10Minute()
         return
 
     def loop5Second(self):
@@ -256,7 +256,7 @@ class PumpProgram:
         for i in insulin_steps:
             self.e.activatePump()
             time.sleep(0.1)
-
+            self.e.dectivatePump()
         #get the new reservoir level and the difference between it and the old reservoir level
         self.reservoir_level = self.e.reservoirLevel()
     
