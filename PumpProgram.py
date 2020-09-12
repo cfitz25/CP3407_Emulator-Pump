@@ -1,27 +1,38 @@
 from Emulator import *
 
 class PumpProgram:
+    #screen positions
     DISPPOS_SUGAR = (0,0)
     DISPPOS_RESERV = (20,0)
     DISPPOS_TOTAL_INSULIN = (40,0)
     DISPPOS_BATTERY = (60,0)
     DISPPOS_LAST_INJECT = (20,20)
-    DISPPOS_MESSAGES = (0,40)
-    last_injection = (0,0)
-    messages = []
-    MAX_MESSAGES = 5
-    message_ind = 0
-    blood_sugar_levels = []
-    MAX_BLOOD_SUGAR = 3
+    DISPPOS_MESSAGES = (0,40)  
+    #blood sugar levels
     SAFE_SUGAR_LEVEL = 20
     UNSAGE_SUGAR_LEVEL = 40
-    NEEDLE_EMPTY_CONDUCTIVITY = 20
+    blood_sugar_levels = []
+    MAX_BLOOD_SUGAR = 3
+    #insulin levels
     INSULIN_MAX_DOSAGE = 50
     INSULIN_MIN_DOSAGE = 10
     INSULIN_MAX_PER_DAY = 500
-    reservoir_level = 0
+    last_injection = (0,0)
     total_insulin_today = 0
+    #battery
+    BATT_MAX_VOLTAGE = 3.3
+    BAT_MIN_VOLTAGE = 1.2
     battery_level = 2
+    #other
+    NEEDLE_EMPTY_CONDUCTIVITY = 20
+    reservoir_level = 0
+    messages = []
+    MAX_MESSAGES = 5
+    message_ind = 0
+
+    
+
+
 
     def __init__(self):
         return
@@ -124,9 +135,13 @@ class PumpProgram:
         if(old_reservoir_level != self.reservoir_level):
             self.logIssue("Reservoir is leaking.")
 
+        battery_voltage = batteryVoltage()
+        if(battery_voltage < self.BAT_MIN_VOLTAGE):
+            self.logIssue("Battery voltage is low.")
 
         #do other non error things
-        self.battery_level = self.batteryVolt2Level(batteryVoltage())
+        #get battery voltage
+        self.battery_level = self.batteryVolt2Level(battery_voltage)
     def loop10Minute(self):
         print("LOOP 10 MIN: ",getTime())
 
@@ -220,6 +235,9 @@ class PumpProgram:
 
         #calculate insulin from sugar
         res = sugar
+        return res
+    def batteryVolt2Level(self,volt):
+        res = (volt-self.BAT_MIN_VOLTAGE)/(self.BATT_MAX_VOLTAGE-self.BAT_MIN_VOLTAGE) * 100
         return res
 p = PumpProgram()
 setTimeMultiplier(5)
