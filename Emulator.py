@@ -39,12 +39,12 @@ class Emulator:
 
 
     def getTime(self):
-        global TIME_NOW
-        global last_time
+        self.TIME_NOW
+        self.last_time
         # modified time so its all relative to the start of the program, makes it easier to read and understand
         original_time = (time.time() - self.start_time)
         # get the time difference between last time and this time, then set the new last_time
-        tmp_time = (original_time - last_time)
+        tmp_time = (original_time - self.last_time)
         last_time = original_time
         # apply multiplier to allow for faster simulation rate
         tmp_time *= self.time_multiplier
