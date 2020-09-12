@@ -323,7 +323,9 @@ p = PumpProgram(e)
 p.connectionSetup("localhost", 5555)
 e.time_multiplier = 5
 e.display_print = False
-p.mainLoop()
+while(True):
+    p.mainLoop()
+    time.sleep(1)
 
 # p.send("Test 1")
 # p.send("Test 2")
