@@ -181,33 +181,44 @@ class PumpProgram:
         rate_of_change1 = self.blood_sugar_levels[2]-self.blood_sugar_levels[1]
         rate_of_change2 = self.blood_sugar_levels[1]-self.blood_sugar_levels[0]
 
+        #make print message
+        message_str = "Blood Levels: "
+        for i in range(self.MAX_BLOOD_SUGAR):
+            message_str += "  ["+str(i)+"] "+str(self.blood_sugar_levels[i])
+        self.e.print("Blood", message_str)
+        self.e.print("Blood", "RoC: "+str(rate_of_change1)+", "+str(rate_of_change2))
         #if blood sugar is above safe levels and the blood sugar level is increasing at an increasing rate then inject insulin
         if(blood_sugar >= self.SAFE_SUGAR_LEVEL and rate_of_change1 > 0 and rate_of_change1 > rate_of_change2):
             inject_insulin = True
-
+            self.e.print("Blood", "Insulin allowed. Blood sugar above SAFE and rate of change increasing increasingly.")
         #if blood sugar is above unsafe levels and the blood sugar is not decreasing at an increasing rate then inejct insulin
         if(blood_sugar >= self.UNSAFE_SUGAR_LEVEL and not (rate_of_change1 < 0 and rate_of_change1 < rate_of_change2)):
             inject_insulin = True
-
+            self.e.print("Blood", "Insulin allowed. Blood sugar above HIGH and rate of change not decreasing increasingly.")
         #if injection isnt needed then end the function
         if(not inject_insulin):
+            self.e.print("Insulin", "Insulin not needed.")
             return
 
         #get the insulin amount, check if its too small or too big and then turn it into steps of 10mL, round down
         insulin_amount = self.sugar2insulin(blood_sugar)
         if(insulin_amount < self.INSULIN_MIN_DOSAGE):
             insulin_amount = self.INSULIN_MIN_DOSAGE
+            self.e.print("Insulin", str(insulin_amount)+"mL is too low, increasing to "+str(self.INSULIN_MIN_DOSAGE)+".")
         elif(insulin_amount > self.INSULIN_MAX_DOSAGE):
             insulin_amount = self.INSULIN_MAX_DOSAGE
+            self.e.print("Insulin", str(insulin_amount)+"mL is too high, decreasing to "+str(self.INSULIN_MAX_DOSAGE)+".")
 
         #constrain the amount of insulin given per day
         if(self.total_insulin_today + insulin_amount > self.INSULIN_MAX_PER_DAY):
             insulin_amount = self.INSULIN_MAX_PER_DAY - self.total_insulin_today
+            self.e.print("Insulin", "Had "+str(self.total_insulin_today)+"mL of "+str(self.INSULIN_MAX_PER_DAY)+"mL, decreasing dosage to "+str(insulin_amount)+"mL.")
         insulin_steps = insulin_amount // 10
-
+        self.e.print("Insulin", str(insulin_amount)+"mL converted to "+str(insulin_steps)+" of 10mL.")
         #check if insulin value is still valid and needs to be injected
         if(insulin_steps <= 0):
             #negative or no steps does not require injection
+            self.e.print("Insulin", "Zero steps so no insulin is needed.")
             return
         
         #get the current reservoir level, used to check if the correct amount of insulin was injected
@@ -216,7 +227,7 @@ class PumpProgram:
         #inject the required amount of insulin
         for i in insulin_steps:
             self.e.activatePump()
-            time.sleep(0.5)
+            time.sleep(0.1)
 
         #get the new reservoir level and the difference between it and the old reservoir level
         self.reservoir_level = self.e.reservoirLevel()
@@ -232,7 +243,9 @@ class PumpProgram:
         if(reservoir_difference != insulin_steps*10):
             self.logIssue("Incorrect amount of insulin amount injected.")
 
-    
+    def logInsulinInjected(self,actually_injected, desired_amount, is_manual):
+        self.e.print("Insulin Log", "{ Actual: "+str(actually_injected)+"mL, Desired: "+str(desired_amount)+", Manual: "+str(is_manual)+" }.")
+        return
     def logIssue(self,issue):
         self.messages.append((self.e.getTime(),issue))
         if(len(self.messages) >= self.MAX_MESSAGES):
@@ -243,27 +256,36 @@ class PumpProgram:
         self.e.alarmSetState(True)
         time.sleep(0.5)
         self.e.alarmSetState(False)
+        e.print("Issue Log",issue)
         return True
     def logBloodSugar(self,blood_sugar):
+
+        self.e.print("Blood Log",str(blood_sugar)+"cc/L }.")
         return
     def logDeviceInfo(self,battery_level, reservoir_level):
+        self.e.print("Info Log","{"+str(round(battery_level,0))+"%, "+str(reservoir_level)+"mL }.")
         return
     def conductivity2sugar(self,conductivity):
 
         #convert conductivity into blood sugar
         res = conductivity
+        self.e.print("Blood",str(conductivity)+"Ohm-m -> "+str(res)+"cc/L.")
         return res
     def sugar2insulin(self,sugar):
 
         #calculate insulin from sugar
         res = sugar
+        self.e.print("Insulin",str(sugar)+"cc/L -> "+str(res)+"mL.")
         return res
     def batteryVolt2Level(self,volt):
+        
         res = (volt-self.BATT_MIN_VOLTAGE)/(self.BATT_MAX_VOLTAGE-self.BATT_MIN_VOLTAGE) * 100
+        self.e.print("Battery",str(volt)+"V -> "+str(round(res,0))+"%.")
         return res
 e = Emulator("Emulator1")
+e.printSetup(20)
 p = PumpProgram(e)
 
-e.time_multiplier = 5
+e.time_multiplier = 30
 e.display_print = False
 p.mainLoop()
