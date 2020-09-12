@@ -188,3 +188,4 @@ class Emulator:
 # emulator.print("Test","This is a Test.")
 # emulator.print("TestTestTest","This is a Test.")
 # emulator.print("TestTestest","This is a Test.")
+ 
