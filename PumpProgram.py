@@ -1,5 +1,5 @@
 from Emulator import *
-
+import socket
 class PumpProgram:
     #screen positions
     DISPPOS_SUGAR = (0,0)
@@ -245,24 +245,30 @@ class PumpProgram:
 
     def logInsulinInjected(self,actually_injected, desired_amount, is_manual):
         self.e.print("Insulin Log", "{ Actual: "+str(actually_injected)+"mL, Desired: "+str(desired_amount)+", Manual: "+str(is_manual)+" }.")
+        self.send("INSULIN "+str(self.e.getDatetime(self.e.getTime()))+" "+str(actually_injected)+" "+str(desired_amount)+" "+str(is_manual))
+
         return
     def logIssue(self,issue):
         self.messages.append((self.e.getTime(),issue))
         if(len(self.messages) >= self.MAX_MESSAGES):
             self.messages.pop(0)
         #later add connection and send to app
+        self.send("ISSUE "+str(self.e.getDatetime(self.e.getTime()))+" {{{"+str(issue)+"}}}")
 
         #trigger alarm
         self.e.alarmSetState(True)
         time.sleep(0.5)
         self.e.alarmSetState(False)
-        e.print("Issue Log",issue)
+        self.e.print("Issue Log",issue)
+        
         return True
     def logBloodSugar(self,blood_sugar):
+        self.send("BLOOD "+str(self.e.getDatetime(self.e.getTime()))+" "+str(blood_sugar))
 
         self.e.print("Blood Log",str(blood_sugar)+"cc/L }.")
         return
     def logDeviceInfo(self,battery_level, reservoir_level):
+        self.send("DEVICE_INFO "+str(self.e.getDatetime(self.e.getTime()))+" "+str(round(battery_level,1))+" "+str(reservoir_level))
         self.e.print("Info Log","{"+str(round(battery_level,0))+"%, "+str(reservoir_level)+"mL }.")
         return
     def conductivity2sugar(self,conductivity):
@@ -282,10 +288,25 @@ class PumpProgram:
         res = (volt-self.BATT_MIN_VOLTAGE)/(self.BATT_MAX_VOLTAGE-self.BATT_MIN_VOLTAGE) * 100
         self.e.print("Battery",str(volt)+"V -> "+str(round(res,0))+"%.")
         return res
+    def connectionSetup(self,IP,port):
+        self.IP = IP
+        self.port = port
+    def send(self,message):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            s.connect((self.IP, self.port))
+        except:
+            return False
+        s.send(message.encode())
+        s.close()
+        return True
 e = Emulator("Emulator1")
 e.printSetup(20)
 p = PumpProgram(e)
-
-e.time_multiplier = 30
+p.connectionSetup("localhost", 5555)
+e.time_multiplier = 5
 e.display_print = False
 p.mainLoop()
+
+# p.send("Test 1")
+# p.send("Test 2")
