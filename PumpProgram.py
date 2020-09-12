@@ -34,7 +34,7 @@ class PumpProgram:
     messages = []
     MAX_MESSAGES = 5
     message_ind = 0
-
+    trigger_manual = False
     
 
 
@@ -42,14 +42,41 @@ class PumpProgram:
     def __init__(self,emulator):
         self.e = emulator
         return
-
+    def start_server(self,port):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.bind(("localhost", port))
+        self.sock.listen(1)
+        self.sock.setblocking(0)
+    def stop_server(self):
+        self.sock.close()
+    def connectionSetup(self,IP,port):
+        self.IP = IP
+        self.port = port
+    def recvProcess(self,sock):
+        message = sock.recv(1024).decode()
+        if(message == "TRIGGER_MANUAL"):
+            self.trigger_manual = True
+        sock.close()
+    def send(self,message):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            s.connect((self.IP, self.port))
+        except:
+            return False
+        s.send(message.encode())
+        s.close()
+        return True
     def mainLoop(self):
         last_time_30s = self.e.getTime()
         last_time_10min = last_time_30s
         last_time_5s = last_time_30s
         while True:
             tmp_time = self.e.getTime()
-
+            try:
+                (clientsocket, address) = self.sock.accept()
+                self.recvProcess(clientsocket)
+            except:
+                p = 0
             #run if it has been atleast 30 seconds since last run
             if(tmp_time-last_time_5s >= 5):
                 last_time_5s = tmp_time
@@ -62,8 +89,9 @@ class PumpProgram:
                 print("####################################")
                 self.loop30Second()
 
-            #run if it has been atleast 10 minutes since last run
-            if(tmp_time-last_time_10min >= 10*60):
+            #run if it has been atleast 10 minutes since last run or if a manual trigger has been activated
+            if(tmp_time-last_time_10min >= 10*60 or self.trigger_manual):
+                self.trigger_manual = False
                 last_time_10min = tmp_time
                 print("####################################")
                 self.loop10Minute()
@@ -288,18 +316,7 @@ class PumpProgram:
         res = (volt-self.BATT_MIN_VOLTAGE)/(self.BATT_MAX_VOLTAGE-self.BATT_MIN_VOLTAGE) * 100
         self.e.print("Battery",str(volt)+"V -> "+str(round(res,0))+"%.")
         return res
-    def connectionSetup(self,IP,port):
-        self.IP = IP
-        self.port = port
-    def send(self,message):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            s.connect((self.IP, self.port))
-        except:
-            return False
-        s.send(message.encode())
-        s.close()
-        return True
+    
 e = Emulator("Emulator1")
 e.printSetup(20)
 p = PumpProgram(e)
