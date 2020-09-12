@@ -39,6 +39,7 @@ class PumpProgram:
                 self.loop10Minute()
             time.sleep(1)
         return
+
     def loop5Second(self):
         #display blood sugar levels
         displayWrite("sugar:\r\n"+str(self.sugar_level)+" cc/L", self.DISPPOS_SUGAR)
