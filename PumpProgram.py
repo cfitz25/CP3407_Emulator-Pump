@@ -102,8 +102,11 @@ class PumpProgram:
         if(not reservoir_result):
             self.logIssue("Reservoir not connected.")
 
-        reservoir_level_result = reservoirLevel()
-
+        #check if the reservoir is leaking
+        old_reservoir_level = self.reservoir_level
+        self.reservoir_level = reservoirLevel()
+        if(old_reservoir_level != self.reservoir_level):
+            self.logIssue("Reservoir is leaking.")
         return
     def loop10Minute(self):
         print("LOOP 10 MIN: ",getTime())
@@ -166,7 +169,7 @@ class PumpProgram:
         self.logInsulinInjected(reservoir_difference, insulin_steps*10)
         self.total_insulin_today += reservoir_difference
 
-        
+
         #check if the amount of insulin that was injected was how much that left the reservoir
         if(reservoir_difference != insulin_steps*10):
             logIssue("Incorrect amount of insulin amount injected.")
