@@ -39,13 +39,11 @@ class Emulator:
 
 
     def getTime(self):
-        global TIME_NOW
-        global last_time
         # modified time so its all relative to the start of the program, makes it easier to read and understand
         original_time = (time.time() - self.start_time)
         # get the time difference between last time and this time, then set the new last_time
         tmp_time = (original_time - self.last_time)
-        last_time = original_time
+        self.last_time = original_time
         # apply multiplier to allow for faster simulation rate
         tmp_time *= self.time_multiplier
         # add modified time difference to TIME_NOW as it represents the emulators time
@@ -148,6 +146,7 @@ while clock < 10:
         emulator.deactivatePump()
     print("Blood Sugar    : " + str(emulator.blood_sugar) + " mmol/L \nInsulin Count  : " + str(emulator.insulin_count) + "\n"+ "Pump Funcional : " + str(emulator.pump_functional) + "\n")
     clock+=1
+    print(emulator.getTime())
 emulator.getTime()
 emulator.getDatetime(0)
 emulator.getConductivity()
