@@ -3,6 +3,7 @@ import datetime
 
 
 class Emulator:
+    
     def __init__(self,name):
         self.start_time = time.time()
         self.last_time = 0
