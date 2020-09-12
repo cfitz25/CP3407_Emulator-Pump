@@ -11,7 +11,8 @@ class PumpProgram:
     messages = []
     MAX_MESSAGES = 5
     message_ind = 0
-    sugar_level = 0
+    blood_sugar_levels = []
+    MAX_BLOOD_SUGAR = 3
     reservoir_level = 0
     total_insulin_today = 0
     battery_level = 2
@@ -42,7 +43,10 @@ class PumpProgram:
 
     def loop5Second(self):
         #display blood sugar levels
-        displayWrite("sugar:\r\n"+str(self.sugar_level)+" cc/L", self.DISPPOS_SUGAR)
+        if(len(self.blood_sugar_levels > 0)):
+            displayWrite("sugar:\r\n"+str(self.blood_sugar_levels[-1])+" cc/L", self.DISPPOS_SUGAR)
+        else:
+            displayWrite("sugar:\r\n--cc/L", self.DISPPOS_SUGAR)
         #display how much is left in the reservoir
         displayWrite("left:\r\n"+str(self.sugar_level)+"mL", self.DISPPOS_RESERV)
         #display how much insulin has been given today
@@ -92,6 +96,7 @@ class PumpProgram:
         if(not reservoir_result):
             self.logIssue("Reservoir not connected.")
 
+        reservoir_level_result = reservoirLevel
         #if any issue occurs then alarm the user
         if(not blood_result or not pump_result or not needle_result or not reservoir_result):
             alarmSetState(True)
@@ -100,12 +105,28 @@ class PumpProgram:
         return
     def loop10Minute(self):
         print("LOOP 10 MIN: ",getTime())
+
+
+        conductivity = getConductivity()
+
+        blood_sugar = self.conductivity2sugar(conductivity)
+
+
         return
     def logIssue(self,issue):
         self.messages.append((getTime(),issue))
         if(len(self.messages) >= self.MAX_MESSAGES):
             self.messages.pop(0)
+        #later add connection and send to app
         return True
+    def conductivity2sugar(self,conductivity):
+        #convert conductivity into blood sugar
+        res = conductivity
+        return res
+    def sugar2insulin(self,sugar):
+        #calculate insulin from sugar
+        res = sugar
+        return res
 p = PumpProgram()
 setTimeMultiplier(5)
 setDisplayPrint(False)
