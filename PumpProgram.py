@@ -10,8 +10,8 @@ class PumpProgram:
     DISPPOS_MESSAGES = (0,40)  
     #blood sugar levels
     SAFE_SUGAR_LEVEL = 20
-    UNSAGE_SUGAR_LEVEL = 40
-    blood_sugar_levels = []
+    UNSAFE_SUGAR_LEVEL = 40
+    blood_sugar_levels = [0, 0, 0]
     MAX_BLOOD_SUGAR = 3
     #insulin levels
     INSULIN_MAX_DOSAGE = 50
@@ -53,16 +53,19 @@ class PumpProgram:
             #run if it has been atleast 30 seconds since last run
             if(tmp_time-last_time_5s >= 5):
                 last_time_5s = tmp_time
+                print("####################################")
                 self.loop5Second()
 
             #run if it has been atleast 30 seconds since last run
             if(tmp_time-last_time_30s >= 30):
                 last_time_30s = tmp_time
+                print("####################################")
                 self.loop30Second()
 
             #run if it has been atleast 10 minutes since last run
             if(tmp_time-last_time_10min >= 10*60):
                 last_time_10min = tmp_time
+                print("####################################")
                 self.loop10Minute()
             time.sleep(1)
         return

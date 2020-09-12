@@ -138,31 +138,31 @@ class Emulator:
         self.TIME_NOW = time
 
 
-emulator = Emulator("emulator")
-emulator.activatePump()
-clock = 0
-while clock < 10:
-    emulator.setTime(clock)
-    emulator.bodyLoop()
-    if(clock==6):
-        emulator.deactivatePump()
-    print("Blood Sugar    : " + str(emulator.blood_sugar) + " mmol/L \nInsulin Count  : " + str(emulator.insulin_count) + "\n"+ "Pump Funcional : " + str(emulator.pump_functional) + "\n")
-    clock+=1
-emulator.getTime()
-emulator.getDatetime(0)
-emulator.getConductivity()
-emulator.reservoirConnected()
-emulator.reservoirLevel()
-emulator.bloodSensorFunctional()
-emulator.pumpFunctional()
-emulator.batteryVoltage()
-emulator.needleInternalConductivity()
-emulator.needleConnected()
-emulator.manualButton()
-emulator.selfTestPump()
-emulator.selfTestBloodSensor()
-emulator.activatePump()
-emulator.deactivatePump()
-emulator.alarmSetState(True)
-emulator.displayWrite("test", (0,0))
-emulator.setTime(0)
+# emulator = Emulator("emulator")
+# emulator.activatePump()
+# clock = 0
+# while clock < 10:
+#     emulator.setTime(clock)
+#     emulator.bodyLoop()
+#     if(clock==6):
+#         emulator.deactivatePump()
+#     print("Blood Sugar    : " + str(emulator.blood_sugar) + " mmol/L \nInsulin Count  : " + str(emulator.insulin_count) + "\n"+ "Pump Funcional : " + str(emulator.pump_functional) + "\n")
+#     clock+=1
+# emulator.getTime()
+# emulator.getDatetime(0)
+# emulator.getConductivity()
+# emulator.reservoirConnected()
+# emulator.reservoirLevel()
+# emulator.bloodSensorFunctional()
+# emulator.pumpFunctional()
+# emulator.batteryVoltage()
+# emulator.needleInternalConductivity()
+# emulator.needleConnected()
+# emulator.manualButton()
+# emulator.selfTestPump()
+# emulator.selfTestBloodSensor()
+# emulator.activatePump()
+# emulator.deactivatePump()
+# emulator.alarmSetState(True)
+# emulator.displayWrite("test", (0,0))
+# emulator.setTime(0)
