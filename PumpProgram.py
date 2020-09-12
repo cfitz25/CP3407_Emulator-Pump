@@ -16,6 +16,9 @@ class PumpProgram:
     SAFE_SUGAR_LEVEL = 20
     UNSAGE_SUGAR_LEVEL = 40
     NEEDLE_EMPTY_CONDUCTIVITY = 20
+    INSULIN_MAX_DOSAGE = 50
+    INSULIN_MIN_DOSAGE = 10
+    INSULIN_MAX_PER_DAY = 500
     reservoir_level = 0
     total_insulin_today = 0
     battery_level = 2
@@ -132,11 +135,21 @@ class PumpProgram:
         if(not inject_insulin):
             return
 
-        #get the insulin amount and turn it into steps of 10mL, round if necessary
+        #get the insulin amount, check if its too small or too big and then turn it into steps of 10mL, round down
         insulin_amount = self.sugar2insulin(blood_sugar)
+        if(insulin_amount < self.INSULIN_MIN_DOSAGE):
+            insulin_amount = self.INSULIN_MIN_DOSAGE
+        elif(insulin_amount > self.INSULIN_MAX_DOSAGE):
+            insulin_amount = self.INSULIN_MAX_DOSAGE
+        #constrain the amount of insulin given per day
+        if(self.total_insulin_today + insulin_amount > self.INSULIN_MAX_PER_DAY):
+            insulin_amount = self.INSULIN_MAX_PER_DAY - self.total_insulin_today
         insulin_steps = insulin_amount // 10
-        if(insulin_amount-insulin_steps*10 >= 5):
-            insulin_steps += 1
+
+        #check if insulin value is still valid and needs to be injected
+        if(insulin_steps <= 0):
+            #negative or no steps does not require injection
+            return
         
         #get the current reservoir level, used to check if the correct amount of insulin was injected
         current_reservoir_level = reservoirLevel()
@@ -145,9 +158,16 @@ class PumpProgram:
         for i in insulin_steps:
             activatePump()
             time.sleep(0.5)
+        #get the new reservoir level and the difference between it and the old reservoir level
+        new_reservoir_level = reservoirLevel()
+        reservoir_difference = current_reservoir_level-new_reservoir_level
+        #log the amount of insulin injects and how much was meant to be, add the actual insulin given to the daily amount given
+        self.logInsulinInjected(reservoir_difference, insulin_steps*10)
+        self.total_insulin_today += reservoir_difference
 
+        
         #check if the amount of insulin that was injected was how much that left the reservoir
-        if(current_reservoir_level != insulin_steps*10):
+        if(reservoir_difference != insulin_steps*10):
             logIssue("Incorrect amount of insulin amount injected.")
         #check to see if there is insulin or something else is in the needle
         if(needleInternalConductivity() > self.NEEDLE_EMPTY_CONDUCTIVITY):
