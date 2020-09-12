@@ -39,15 +39,16 @@ class PumpProgram:
 
 
 
-    def __init__(self):
+    def __init__(self,emulator):
+        self.e = emulator
         return
 
     def mainLoop(self):
-        last_time_30s = getTime()
+        last_time_30s = self.e.getTime()
         last_time_10min = last_time_30s
         last_time_5s = last_time_30s
         while True:
-            tmp_time = getTime()
+            tmp_time = self.e.getTime()
 
             #run if it has been atleast 30 seconds since last run
             if(tmp_time-last_time_5s >= 5):
@@ -70,28 +71,28 @@ class PumpProgram:
 
         #display blood sugar levels
         if(len(self.blood_sugar_levels) > 0):
-            displayWrite("sugar:\r\n"+str(self.blood_sugar_levels[-1])+" cc/L", self.DISPPOS_SUGAR)
+            self.e.displayWrite("sugar:\r\n"+str(self.blood_sugar_levels[-1])+" cc/L", self.DISPPOS_SUGAR)
         else:
-            displayWrite("sugar:\r\n--cc/L", self.DISPPOS_SUGAR)
+            self.e.displayWrite("sugar:\r\n--cc/L", self.DISPPOS_SUGAR)
 
         #display how much is left in the reservoir
-        displayWrite("left:\r\n"+str(self.reservoir_level)+"mL", self.DISPPOS_RESERV)
+        self.e.displayWrite("left:\r\n"+str(self.reservoir_level)+"mL", self.DISPPOS_RESERV)
 
         #display how much insulin has been given today
-        displayWrite("total:\r\n"+str(self.total_insulin_today)+"mL", self.DISPPOS_TOTAL_INSULIN)
+        self.e.displayWrite("total:\r\n"+str(self.total_insulin_today)+"mL", self.DISPPOS_TOTAL_INSULIN)
 
         #display battery left
-        displayWrite("battery:\r\n"+str(self.battery_level)+"%", self.DISPPOS_BATTERY)
+        self.e.displayWrite("battery:\r\n"+str(self.battery_level)+"%", self.DISPPOS_BATTERY)
 
         #if the last injection has occured display it otherwise display dummy info
         write_string = "last injection:\r\n"
         if(self.last_injection[0] != -1):
-            dt = getDatetime(self.last_injection[0])
+            dt = self.e.getDatetime(self.last_injection[0])
 
             write_string += str(self.last_injection[1])+"mL\r\n("+str(dt)+")"
         else:
             write_string += "--mL\r\n()"
-        displayWrite(write_string, self.DISPPOS_LAST_INJECT)
+        self.e.displayWrite(write_string, self.DISPPOS_LAST_INJECT)
         write_string = "("
 
         #if messages exist then display it otherwise display dummy info
@@ -100,52 +101,52 @@ class PumpProgram:
             self.message_ind += 1
             if(self.message_ind >= len(self.messages)):
                 self.message_ind = 0
-            dt = getDatetime(time)
+            dt = self.e.getDatetime(time)
             write_string += str(dt.time())+") "+str(message)
         else:
             write_string += ") ---------------"
-        displayWrite(write_string, self.DISPPOS_MESSAGES)
+        self.e.displayWrite(write_string, self.DISPPOS_MESSAGES)
 
     def loop30Second(self):
-        print("LOOP 30 SEC: ",getTime())
+        print("LOOP 30 SEC: ",self.e.getTime())
 
         #check if the blood sensor is working, log error if not
 
-        selfTestBloodSensor()
-        blood_result = bloodSensorFunctional()
+        self.e.selfTestBloodSensor()
+        blood_result = self.e.bloodSensorFunctional()
         if(not blood_result):
             self.logIssue("Sensor Test Failed.")
 
         #check if the pump is working, log error if not
-        selfTestPump()
-        pump_result = pumpFunctional()
+        self.e.selfTestPump()
+        pump_result = self.e.pumpFunctional()
         if(not pump_result):
             self.logIssue("Pump Test Failed.")
 
         #check if the needle is connected, log error if not
-        needle_result = needleConnected()
+        needle_result = self.e.needleConnected()
         if(not needle_result):
             self.logIssue("Needle not connected.")
 
         #check if reservoir is connected, log error if not
-        reservoir_result = reservoirConnected()
+        reservoir_result = self.e.reservoirConnected()
         if(not reservoir_result):
             self.logIssue("Reservoir not connected.")
 
         #check to see if there is insulin or something else is in the needle
-        if(needleInternalConductivity() > self.NEEDLE_EMPTY_CONDUCTIVITY):
+        if(self.e.needleInternalConductivity() > self.NEEDLE_EMPTY_CONDUCTIVITY):
             self.logIssue("Needle has a blockage.")
 
         #check if the reservoir is leaking and check if it needs replacing
         old_reservoir_level = self.reservoir_level
-        self.reservoir_level = reservoirLevel()
+        self.reservoir_level = self.e.reservoirLevel()
         if(old_reservoir_level != self.reservoir_level):
             self.logIssue("Reservoir is leaking.")
 
         if(self.reservoir_level < self.RESERVOIR_MIN_LEVEL):
             self.logIssue("Reservoir is almost empty.")
 
-        battery_voltage = batteryVoltage()
+        battery_voltage = self.e.batteryVoltage()
         if(battery_voltage < self.BATT_MIN_VOLTAGE):
             self.logIssue("Battery voltage is low.")
 
@@ -160,7 +161,7 @@ class PumpProgram:
         
 
         #get the conductivity and turn it into blood sugar
-        conductivity = getConductivity()
+        conductivity = self.e.getConductivity()
         blood_sugar = self.conductivity2sugar(conductivity)
 
         #add the sugar level to the list and remove the oldest value if the list is too long
@@ -207,21 +208,22 @@ class PumpProgram:
             return
         
         #get the current reservoir level, used to check if the correct amount of insulin was injected
-        current_reservoir_level = reservoirLevel()
+        current_reservoir_level = self.e.reservoirLevel()
 
         #inject the required amount of insulin
         for i in insulin_steps:
-            activatePump()
+            self.e.activatePump()
             time.sleep(0.5)
 
         #get the new reservoir level and the difference between it and the old reservoir level
-        new_reservoir_level = reservoirLevel()
-        reservoir_difference = current_reservoir_level-new_reservoir_level
+        self.reservoir_level = self.e.reservoirLevel()
+    
+        reservoir_difference = current_reservoir_level-self.reservoir_level
 
         #log the amount of insulin injects and how much was meant to be, add the actual insulin given to the daily amount given
         self.logInsulinInjected(reservoir_difference, insulin_steps*10,False)
         self.total_insulin_today += reservoir_difference
-        self.last_injection = (getTime(),reservoir_difference)
+        self.last_injection = (self.e.getTime(),reservoir_difference)
 
         #check if the amount of insulin that was injected was how much that left the reservoir
         if(reservoir_difference != insulin_steps*10):
@@ -229,15 +231,15 @@ class PumpProgram:
 
     
     def logIssue(self,issue):
-        self.messages.append((getTime(),issue))
+        self.messages.append((self.e.getTime(),issue))
         if(len(self.messages) >= self.MAX_MESSAGES):
             self.messages.pop(0)
         #later add connection and send to app
 
         #trigger alarm
-        alarmSetState(True)
+        self.e.alarmSetState(True)
         time.sleep(0.5)
-        alarmSetState(False)
+        self.e.alarmSetState(False)
         return True
     def logBloodSugar(self,blood_sugar):
         return
@@ -256,7 +258,9 @@ class PumpProgram:
     def batteryVolt2Level(self,volt):
         res = (volt-self.BATT_MIN_VOLTAGE)/(self.BATT_MAX_VOLTAGE-self.BATT_MIN_VOLTAGE) * 100
         return res
-p = PumpProgram()
-setTimeMultiplier(5)
-setDisplayPrint(False)
+e = Emulator("Emulator1")
+p = PumpProgram(e)
+
+e.time_multiplier = 5
+e.display_print = False
 p.mainLoop()
