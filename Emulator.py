@@ -155,9 +155,9 @@ class Emulator:
         print_string += message
         print(print_string)
 
-emulator = Emulator("emulator")
-emulator.activatePump()
-clock = 0
+# emulator = Emulator("emulator")
+# emulator.activatePump()
+# clock = 0
 # while clock < 10:
 #     emulator.setTime(clock)
 #     emulator.bodyLoop()
