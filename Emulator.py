@@ -22,7 +22,7 @@ class Emulator:
         self.blood_conductivity = 0.5
         self.insulin_count = 0
         self.blood_sugar = 0
-
+        self.print_on = True
     def bodyLoop(self):
         if self.TIME_NOW < 6:
             if self.pump_functional & self.reservoir_connected & self.sensor_functional & self.needle_connected & self.pump_active:
@@ -144,6 +144,8 @@ class Emulator:
         except:
             self.max_length = headers
     def print(self,header, message):
+        if(not self.print_on):
+            return
         print_string = "["
         left_over = self.max_length - len(header)
         for i in range(int(left_over/2)):

@@ -44,6 +44,7 @@ class PumpProgram:
         self.count_30 = 0
         self.count_10_60 = 0
         self.count_5 = 0
+        self.start_server(5554)
         return
     def start_server(self,port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -73,6 +74,7 @@ class PumpProgram:
         self.count_10_60 += 1
         self.count_30 += 1
         self.count_5 += 1
+        # print(self.count_5,self.count_30,self.count_10_60)
         try:
             (clientsocket, address) = self.sock.accept()
             self.recvProcess(clientsocket)
@@ -86,7 +88,7 @@ class PumpProgram:
 
         #run if it has been atleast 30 seconds since last run
         if(self.count_30 >= 30):
-            count_30 = 0
+            self.count_30 = 0
             print("####################################")
             self.loop30Second()
 
@@ -319,13 +321,14 @@ class PumpProgram:
     
 e = Emulator("Emulator1")
 e.printSetup(20)
+e.print_on = False
 p = PumpProgram(e)
 p.connectionSetup("localhost", 5555)
 e.time_multiplier = 5
 e.display_print = False
 while(True):
     p.mainLoop()
-    time.sleep(1)
+    time.sleep(1/20)
 
 # p.send("Test 1")
 # p.send("Test 2")
