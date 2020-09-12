@@ -65,6 +65,7 @@ class PumpProgram:
                 self.loop10Minute()
             time.sleep(1)
         return
+
     def loop5Second(self):
 
         #display blood sugar levels
