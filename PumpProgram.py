@@ -32,14 +32,17 @@ class PumpProgram:
         last_time_5s = last_time_30s
         while True:
             tmp_time = getTime()
+
             #run if it has been atleast 30 seconds since last run
             if(tmp_time-last_time_5s >= 5):
                 last_time_5s = tmp_time
                 self.loop5Second()
+
             #run if it has been atleast 30 seconds since last run
             if(tmp_time-last_time_30s >= 30):
                 last_time_30s = tmp_time
                 self.loop30Second()
+
             #run if it has been atleast 10 minutes since last run
             if(tmp_time-last_time_10min >= 10*60):
                 last_time_10min = tmp_time
@@ -48,17 +51,22 @@ class PumpProgram:
         return
 
     def loop5Second(self):
+
         #display blood sugar levels
-        if(len(self.blood_sugar_levels > 0)):
+        if(len(self.blood_sugar_levels) > 0):
             displayWrite("sugar:\r\n"+str(self.blood_sugar_levels[-1])+" cc/L", self.DISPPOS_SUGAR)
         else:
             displayWrite("sugar:\r\n--cc/L", self.DISPPOS_SUGAR)
+
         #display how much is left in the reservoir
-        displayWrite("left:\r\n"+str(self.sugar_level)+"mL", self.DISPPOS_RESERV)
+        displayWrite("left:\r\n"+str(self.reservoir_level)+"mL", self.DISPPOS_RESERV)
+
         #display how much insulin has been given today
-        displayWrite("total:\r\n"+str(self.sugar_level)+"mL", self.DISPPOS_TOTAL_INSULIN)
+        displayWrite("total:\r\n"+str(self.total_insulin_today)+"mL", self.DISPPOS_TOTAL_INSULIN)
+
         #display battery left
-        displayWrite("battery:\r\n"+str(self.sugar_level)+"%", self.DISPPOS_BATTERY)
+        displayWrite("battery:\r\n"+str(self.battery_level)+"%", self.DISPPOS_BATTERY)
+
         #if the last injection has occured display it otherwise display dummy info
         write_string = "last injection:\r\n"
         if(self.last_injection[0] != -1):
@@ -69,6 +77,7 @@ class PumpProgram:
             write_string += "--mL\r\n()"
         displayWrite(write_string, self.DISPPOS_LAST_INJECT)
         write_string = "("
+
         #if messages exist then display it otherwise display dummy info
         if(len(self.messages) > 0):
             time,message = self.messages[self.message_ind]
@@ -109,13 +118,16 @@ class PumpProgram:
         #check to see if there is insulin or something else is in the needle
         if(needleInternalConductivity() > self.NEEDLE_EMPTY_CONDUCTIVITY):
             self.logIssue("Needle has a blockage.")
-            
+
         #check if the reservoir is leaking
         old_reservoir_level = self.reservoir_level
         self.reservoir_level = reservoirLevel()
         if(old_reservoir_level != self.reservoir_level):
             self.logIssue("Reservoir is leaking.")
-        return
+
+
+        #do other non error things
+        self.battery_level = self.batteryVolt2Level(batteryVoltage())
     def loop10Minute(self):
         print("LOOP 10 MIN: ",getTime())
 
@@ -132,16 +144,18 @@ class PumpProgram:
         self.logBloodSugar(blood_sugar)
 
         inject_insulin = False
+
         #get change in blood sugar levels
         rate_of_change1 = self.blood_sugar_levels[2]-self.blood_sugar_levels[1]
         rate_of_change2 = self.blood_sugar_levels[1]-self.blood_sugar_levels[0]
+
         #if blood sugar is above safe levels and the blood sugar level is increasing at an increasing rate then inject insulin
         if(blood_sugar >= self.SAFE_SUGAR_LEVEL and rate_of_change1 > 0 and rate_of_change1 > rate_of_change2):
             inject_insulin = True
+
         #if blood sugar is above unsafe levels and the blood sugar is not decreasing at an increasing rate then inejct insulin
-        if(blood_sugar >= self.UNSAFE_SUGAR_LEVEL and not (rate_of_change1 < 0 and rate_of_change1 < rate_of_change2):
+        if(blood_sugar >= self.UNSAFE_SUGAR_LEVEL and not (rate_of_change1 < 0 and rate_of_change1 < rate_of_change2)):
             inject_insulin = True
-        return
 
         #if injection isnt needed then end the function
         if(not inject_insulin):
@@ -153,6 +167,7 @@ class PumpProgram:
             insulin_amount = self.INSULIN_MIN_DOSAGE
         elif(insulin_amount > self.INSULIN_MAX_DOSAGE):
             insulin_amount = self.INSULIN_MAX_DOSAGE
+
         #constrain the amount of insulin given per day
         if(self.total_insulin_today + insulin_amount > self.INSULIN_MAX_PER_DAY):
             insulin_amount = self.INSULIN_MAX_PER_DAY - self.total_insulin_today
@@ -170,13 +185,14 @@ class PumpProgram:
         for i in insulin_steps:
             activatePump()
             time.sleep(0.5)
+
         #get the new reservoir level and the difference between it and the old reservoir level
         new_reservoir_level = reservoirLevel()
         reservoir_difference = current_reservoir_level-new_reservoir_level
+
         #log the amount of insulin injects and how much was meant to be, add the actual insulin given to the daily amount given
         self.logInsulinInjected(reservoir_difference, insulin_steps*10)
         self.total_insulin_today += reservoir_difference
-
 
         #check if the amount of insulin that was injected was how much that left the reservoir
         if(reservoir_difference != insulin_steps*10):
@@ -197,10 +213,12 @@ class PumpProgram:
     def logBloodSugar(self,blood_sugar):
         return
     def conductivity2sugar(self,conductivity):
+
         #convert conductivity into blood sugar
         res = conductivity
         return res
     def sugar2insulin(self,sugar):
+
         #calculate insulin from sugar
         res = sugar
         return res
