@@ -1,13 +1,16 @@
 import time
 import datetime
-
+start_time = time.time()
+last_time = 0
+TIME_NOW = 0
+time_multiplier = 5
 
 class Emulator:
-    
-    def __init__(self,name):
+    def __init__(self, name):
         self.start_time = time.time()
         self.last_time = 0
         self.TIME_NOW = 0
+        self.time_diff = 0
         self.time_multiplier = 5
         self.display_print = True
         self.button_state = False
@@ -22,34 +25,45 @@ class Emulator:
         self.blood_conductivity = 0.5
         self.insulin_count = 0
         self.blood_sugar = 0
-        self.print_on = True
-    def bodyLoop(self):
-        if self.TIME_NOW < 6:
-            if self.pump_functional & self.reservoir_connected & self.sensor_functional & self.needle_connected & self.pump_active:
-                self.insulin_count += 10
-                self.reservoir_level -= 10
-                self.blood_sugar += self.insulin_count + self.blood_conductivity
-            if self.TIME_NOW > 2:
-                self.needle_connected = False
-            time.sleep(1)
-            if not self.needle_connected:
-                self.pump_functional = False
-                self.blood_sugar-=10
-                self.insulin_count-=5
 
+    def bodyCalc(self):
+        multiplier = round(self.time_diff)
+        if self.pump_functional & self.reservoir_connected & self.sensor_functional & self.needle_connected & self.pump_active:
+            self.insulin_count += multiplier
+            self.reservoir_level -= multiplier
+            self.blood_sugar += self.insulin_count + self.blood_conductivity
+        if not self.pump_active:
+            self.blood_sugar -= multiplier
+            self.insulin_count -= multiplier
+        if not self.reservoir_connected or not self.needle_connected:
+            self.pump_functional = False
+
+    def run(self):
+        self.TIME_NOW = time.time()
+        self.time_diff = self.start_time - self.TIME_NOW
+        if self.time_diff < 60:
+            self.TIME_NOW = time.time()
+            self.time_diff = self.TIME_NOW - self.start_time
+            self.bodyCalc()
+            if self.time_diff > 30:
+                self.needle_connected = False
+            if self.time_diff > 40:
+                self.reservoir_connected = False
 
     def getTime(self):
+        global TIME_NOW
+        global last_time
         # modified time so its all relative to the start of the program, makes it easier to read and understand
         original_time = (time.time() - self.start_time)
         # get the time difference between last time and this time, then set the new last_time
-        tmp_time = (original_time - self.last_time)
-        self.last_time = original_time
+        tmp_time = (original_time - last_time)
+        last_time = original_time
         # apply multiplier to allow for faster simulation rate
         tmp_time *= self.time_multiplier
         # add modified time difference to TIME_NOW as it represents the emulators time
-        self.TIME_NOW = self.TIME_NOW + tmp_time
+        TIME_NOW = TIME_NOW + tmp_time
 
-        return self.TIME_NOW
+        return TIME_NOW
 
     def getDatetime(self,time):
         dt = datetime.datetime.fromtimestamp(time + self.start_time)
@@ -190,4 +204,26 @@ class Emulator:
 # emulator.print("Test","This is a Test.")
 # emulator.print("TestTestTest","This is a Test.")
 # emulator.print("TestTestest","This is a Test.")
- 
+
+    def setTime(self, time):
+        self.TIME_NOW = time
+        return False
+
+
+emulator = Emulator("emulator")
+emulator.activatePump()
+start = time.time()
+diff = time.time() - start
+while diff < 10:
+    emulator.setTime(time.time())
+    emulator.run()
+    if (diff>= 6):
+        emulator.deactivatePump()
+    elif (diff >= 5):
+        state = emulator.selfTestPump()
+        print("Is Pump Functional? " + str(state))
+    print("Blood Sugar    : " + str(emulator.blood_sugar) + " mmol/L \nInsulin Count  : " + str(
+        emulator.insulin_count) + "\n" + "Pump Funcional : " + str(
+        emulator.pump_functional) + "\n" + "Pumnp Active   : " + str(emulator.pump_active) + "\n")
+    diff = time.time() - start
+    time.sleep(1)
