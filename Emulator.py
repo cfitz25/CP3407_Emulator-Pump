@@ -149,7 +149,7 @@ class Emulator:
         for i in range(int(left_over/2)):
             print_string += " "
         print_string += header
-        for i in range(int(left_over/2)):
+        for i in range(self.max_length-len(print_string)):
             print_string += " "
         print_string += "] "
         print_string += message
@@ -187,3 +187,4 @@ emulator.setTime(0)
 emulator.printSetup(20)
 emulator.print("Test","This is a Test.")
 emulator.print("TestTestTest","This is a Test.")
+emulator.print("TestTestest","This is a Test.")
