@@ -82,25 +82,33 @@ class PumpProgram:
         return
     def loop30Second(self):
         print("LOOP 30 SEC: ",getTime())
+
         #check if the blood sensor is working, log error if not
         selfTestBloodSensor()
         blood_result = bloodSensorFunctional()
         if(not blood_result):
             self.logIssue("Sensor Test Failed.")
+
         #check if the pump is working, log error if not
         selfTestPump()
         pump_result = pumpFunctional()
         if(not pump_result):
             self.logIssue("Pump Test Failed.")
+
         #check if the needle is connected, log error if not
         needle_result = needleConnected()
         if(not needle_result):
             self.logIssue("Needle not connected.")
+
         #check if reservoir is connected, log error if not
         reservoir_result = reservoirConnected()
         if(not reservoir_result):
             self.logIssue("Reservoir not connected.")
 
+        #check to see if there is insulin or something else is in the needle
+        if(needleInternalConductivity() > self.NEEDLE_EMPTY_CONDUCTIVITY):
+            self.logIssue("Needle has a blockage.")
+            
         #check if the reservoir is leaking
         old_reservoir_level = self.reservoir_level
         self.reservoir_level = reservoirLevel()
@@ -171,10 +179,9 @@ class PumpProgram:
 
         #check if the amount of insulin that was injected was how much that left the reservoir
         if(reservoir_difference != insulin_steps*10):
-            logIssue("Incorrect amount of insulin amount injected.")
-        #check to see if there is insulin or something else is in the needle
-        if(needleInternalConductivity() > self.NEEDLE_EMPTY_CONDUCTIVITY):
-            logIssue("Needle has a blockage.")
+            self.logIssue("Incorrect amount of insulin amount injected.")
+
+    
     def logIssue(self,issue):
         self.messages.append((getTime(),issue))
         if(len(self.messages) >= self.MAX_MESSAGES):
