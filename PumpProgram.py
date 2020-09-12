@@ -109,6 +109,7 @@ class PumpProgram:
         print("LOOP 30 SEC: ",getTime())
 
         #check if the blood sensor is working, log error if not
+
         selfTestBloodSensor()
         blood_result = bloodSensorFunctional()
         if(not blood_result):
@@ -155,7 +156,7 @@ class PumpProgram:
         self.logDeviceInfo(self.battery_level,self.reservoir_level)
 
     def loop10Minute(self):
-        print("LOOP 10 MIN: ",getTime())
+        
 
         #get the conductivity and turn it into blood sugar
         conductivity = getConductivity()
