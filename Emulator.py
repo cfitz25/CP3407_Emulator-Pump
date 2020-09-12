@@ -134,11 +134,30 @@ class Emulator:
 
     def setTime(self,time):
         self.TIME_NOW = time
+    def printSetup(self,headers):
+        self.max_length = 0
+        try:
+            for h in headers:
+                tmp = len(h)
+                if(tmp > self.max_length):
+                    self.max_length = tmp
+        except:
+            self.max_length = headers
+    def print(self,header, message):
+        print_string = "["
+        left_over = self.max_length - len(header)
+        for i in range(int(left_over/2)):
+            print_string += " "
+        print_string += header
+        for i in range(int(left_over/2)):
+            print_string += " "
+        print_string += "] "
+        print_string += message
+        print(print_string)
 
-
-# emulator = Emulator("emulator")
-# emulator.activatePump()
-# clock = 0
+emulator = Emulator("emulator")
+emulator.activatePump()
+clock = 0
 # while clock < 10:
 #     emulator.setTime(clock)
 #     emulator.bodyLoop()
@@ -146,21 +165,25 @@ class Emulator:
 #         emulator.deactivatePump()
 #     print("Blood Sugar    : " + str(emulator.blood_sugar) + " mmol/L \nInsulin Count  : " + str(emulator.insulin_count) + "\n"+ "Pump Funcional : " + str(emulator.pump_functional) + "\n")
 #     clock+=1
-# emulator.getTime()
-# emulator.getDatetime(0)
-# emulator.getConductivity()
-# emulator.reservoirConnected()
-# emulator.reservoirLevel()
-# emulator.bloodSensorFunctional()
-# emulator.pumpFunctional()
-# emulator.batteryVoltage()
-# emulator.needleInternalConductivity()
-# emulator.needleConnected()
-# emulator.manualButton()
-# emulator.selfTestPump()
-# emulator.selfTestBloodSensor()
-# emulator.activatePump()
-# emulator.deactivatePump()
-# emulator.alarmSetState(True)
-# emulator.displayWrite("test", (0,0))
-# emulator.setTime(0)
+#     print(emulator.getTime())
+emulator.getTime()
+emulator.getDatetime(0)
+emulator.getConductivity()
+emulator.reservoirConnected()
+emulator.reservoirLevel()
+emulator.bloodSensorFunctional()
+emulator.pumpFunctional()
+emulator.batteryVoltage()
+emulator.needleInternalConductivity()
+emulator.needleConnected()
+emulator.manualButton()
+emulator.selfTestPump()
+emulator.selfTestBloodSensor()
+emulator.activatePump()
+emulator.deactivatePump()
+emulator.alarmSetState(True)
+emulator.displayWrite("test", (0,0))
+emulator.setTime(0)
+emulator.printSetup(20)
+emulator.print("Test","This is a Test.")
+emulator.print("TestTestTest","This is a Test.")
