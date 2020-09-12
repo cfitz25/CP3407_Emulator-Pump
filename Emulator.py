@@ -49,9 +49,9 @@ class Emulator:
         # apply multiplier to allow for faster simulation rate
         tmp_time *= self.time_multiplier
         # add modified time difference to TIME_NOW as it represents the emulators time
-        TIME_NOW = TIME_NOW + tmp_time
+        self.TIME_NOW = self.TIME_NOW + tmp_time
 
-        return TIME_NOW
+        return self.TIME_NOW
 
     def getDatetime(self,time):
         dt = datetime.datetime.fromtimestamp(time + self.start_time)
@@ -148,3 +148,21 @@ while clock < 10:
         emulator.deactivatePump()
     print("Blood Sugar    : " + str(emulator.blood_sugar) + " mmol/L \nInsulin Count  : " + str(emulator.insulin_count) + "\n"+ "Pump Funcional : " + str(emulator.pump_functional) + "\n")
     clock+=1
+emulator.getTime()
+emulator.getDatetime(0)
+emulator.getConductivity()
+emulator.reservoirConnected()
+emulator.reservoirLevel()
+emulator.bloodSensorFunctional()
+emulator.pumpFunctional()
+emulator.batteryVoltage()
+emulator.needleInternalConductivity()
+emulator.needleConnected()
+emulator.manualButton()
+emulator.selfTestPump()
+emulator.selfTestBloodSensor()
+emulator.activatePump()
+emulator.deactivatePump()
+emulator.alarmSetState(True)
+emulator.displayWrite("test", (0,0))
+emulator.setTime(0)
