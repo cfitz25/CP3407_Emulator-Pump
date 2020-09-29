@@ -12,5 +12,6 @@ public class PastIssuesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_past_issues);
+
     }
 }
