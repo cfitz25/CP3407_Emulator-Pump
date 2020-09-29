@@ -1,10 +1,10 @@
 package au.edu.jcu.cp3406.pumpappv1;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
+        import android.content.Intent;
+        import android.os.Bundle;
+        import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
+        import androidx.appcompat.app.AppCompatActivity;
 
 public class MenuActivity extends AppCompatActivity {
     public static final int MENU_REQUEST = 123;
@@ -22,8 +22,27 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     public void bloodHistoryClocked(View view) {
-        Intent intentUserProfile = new Intent(this, pastBloodsugarActivity.class);
+        Intent intentBloodHistory = new Intent(this, PastBloodsugarActivity.class);
         final int result = 2;
-        startActivityForResult(intentUserProfile, result);
+        startActivityForResult(intentBloodHistory, result);
     }
+    public void paskInjectionsClicked(View view) {
+        Intent intentInjections = new Intent(this, PastInjectionsActivity.class);
+        final int result = 3;
+        startActivityForResult(intentInjections, result);
+    }
+
+    public void ResHistoryClicked(View view) {
+        Intent intentResHist = new Intent(this, PastReservoirActivity.class);
+        final int result = 4;
+        startActivityForResult(intentResHist, result);
+    }
+
+    public void pastIssuesClicked(View view) {
+        Intent intentPastIssues = new Intent(this,PastIssuesActivity.class);
+        final int result = 5;
+        startActivityForResult(intentPastIssues, result);
+    }
+
+
 }

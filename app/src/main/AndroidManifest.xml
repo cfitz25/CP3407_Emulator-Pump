@@ -25,7 +25,19 @@
         android:label="profile"
         android:theme="@style/AppTheme"/>
 
-        <activity android:name=".pastBloodsugarActivity"
+        <activity android:name=".PastBloodsugarActivity"
+            android:label="profile"
+            android:theme="@style/AppTheme"/>
+
+        <activity android:name=".PastInjectionsActivity"
+            android:label="profile"
+            android:theme="@style/AppTheme"/>
+
+        <activity android:name=".PastReservoirActivity"
+        android:label="profile"
+        android:theme="@style/AppTheme"/>
+
+        <activity android:name=".PastIssuesActivity"
             android:label="profile"
             android:theme="@style/AppTheme"/>
 

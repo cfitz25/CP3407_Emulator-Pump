@@ -28,4 +28,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void bloodHistoryClocked(View view) {
     }
+
+    public void paskInjectionsClicked(View view) {
+    }
+
+    public void ResHistoryClicked(View view) {
+    }
+
+    public void pastIssuesClicked(View view) {
+    }
 }

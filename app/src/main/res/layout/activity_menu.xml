@@ -49,7 +49,8 @@
                 android:text="Injections History"
                 android:textSize="12sp"
                 android:paddingLeft="10dp"
-                tools:ignore="RtlHardcoded" />
+                tools:ignore="RtlHardcoded"
+                android:onClick="paskInjectionsClicked"/>
 
             <Button
                 android:id="@+id/pastBlood"
@@ -73,7 +74,8 @@
                 android:text="reservoir History"
                 android:textSize="12sp"
                 android:paddingLeft="10dp"
-                tools:ignore="RtlHardcoded" />
+                tools:ignore="RtlHardcoded"
+                android:onClick="ResHistoryClicked"/>
 
             <Button
                 android:id="@+id/pastIssues"
@@ -85,7 +87,8 @@
                 android:text="Issues History"
                 android:paddingLeft="10dp"
                 android:textSize="12sp"
-                tools:ignore="RtlHardcoded" />
+                tools:ignore="RtlHardcoded"
+                android:onClick="pastIssuesClicked"/>
         </LinearLayout>
     </LinearLayout>
 

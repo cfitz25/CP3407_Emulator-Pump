@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class pastBloodsugarActivity extends AppCompatActivity {
+public class PastBloodsugarActivity extends AppCompatActivity {
 
     public static final int MENU_REQUEST = 123;
 
