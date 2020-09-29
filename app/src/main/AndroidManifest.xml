@@ -22,8 +22,13 @@
         android:theme="@style/AppTheme"/>
 
         <activity android:name=".ProfileActivity"
+        android:label="profile"
+        android:theme="@style/AppTheme"/>
+
+        <activity android:name=".pastBloodsugarActivity"
             android:label="profile"
             android:theme="@style/AppTheme"/>
+
     </application>
 
 </manifest>

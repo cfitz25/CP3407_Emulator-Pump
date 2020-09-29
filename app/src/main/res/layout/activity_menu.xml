@@ -61,7 +61,8 @@
                 android:text="Blood Results History"
                 android:textSize="12sp"
                 android:paddingLeft="10dp"
-                tools:ignore="RtlHardcoded" />
+                tools:ignore="RtlHardcoded"
+                android:onClick="bloodHistoryClocked"/>
             <Button
                 android:id="@+id/MainScreenMessages"
                 android:layout_width="150dp"

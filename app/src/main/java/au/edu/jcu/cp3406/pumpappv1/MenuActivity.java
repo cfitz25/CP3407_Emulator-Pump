@@ -20,4 +20,10 @@ public class MenuActivity extends AppCompatActivity {
         final int result = 2;
         startActivityForResult(intentUserProfile, result);
     }
+
+    public void bloodHistoryClocked(View view) {
+        Intent intentUserProfile = new Intent(this, pastBloodsugarActivity.class);
+        final int result = 2;
+        startActivityForResult(intentUserProfile, result);
+    }
 }

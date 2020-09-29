@@ -25,4 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void userProfileClicked(View view) {
     }
+
+    public void bloodHistoryClocked(View view) {
+    }
 }
