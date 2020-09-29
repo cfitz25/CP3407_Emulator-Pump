@@ -35,33 +35,31 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:paddingTop="10dp"
-                android:text="first name:"/>
+                android:text="first name: John"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="last name:"/>
+                android:text="last name: Smith"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="gender"/>
+                android:text="gender: Male"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="DOB:"/>
+                android:text="DOB:02/06/1973"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="Diabetes Type:"/>
-
-
+                android:text="Diabetes Type: Type 1"/>
 
         </LinearLayout>
 

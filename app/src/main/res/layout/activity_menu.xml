@@ -34,7 +34,9 @@
                 android:text="User Profile"
                 android:textSize="12sp"
                 android:paddingLeft="10dp"
-                tools:ignore="RtlHardcoded" />
+                tools:ignore="RtlHardcoded"
+                android:onClick="userProfileClicked"
+                />
 
 
             <Button

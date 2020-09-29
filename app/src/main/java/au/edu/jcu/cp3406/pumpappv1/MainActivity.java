@@ -18,8 +18,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void menuClicked(View view) {
         Intent intent = new Intent(this, MenuActivity.class);
-        startActivityForResult(intent, MenuActivity.MENU_REQUEST);
+        final int result = 1;
+        startActivityForResult(intent, result);
     }
 
 
+    public void userProfileClicked(View view) {
+    }
 }
