@@ -6,7 +6,7 @@ import socket
 # create an INET, STREAMing socket
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # bind the socket to a public host, and a well-known port
-serversocket.bind(("localhost", 5555))
+serversocket.bind(("localhost", 5550))
 # become a server socket
 serversocket.listen(5)
 def client_thread(socket):

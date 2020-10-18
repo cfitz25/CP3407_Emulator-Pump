@@ -183,7 +183,9 @@
                 android:gravity="center_vertical|left"
                 android:text="Manuel Injection"
                 android:textSize="12sp"
-                tools:ignore="RtlHardcoded" />
+                tools:ignore="RtlHardcoded"
+                android:onClick="manualButtonClicked"
+                />
 
         </LinearLayout>
 

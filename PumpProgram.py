@@ -29,6 +29,7 @@ class PumpProgram:
 
     #device info
     DEVICE_MODEL = "Prototype_1"
+    DEVICE_ID = 1
     #other
     NEEDLE_EMPTY_CONDUCTIVITY = 20
     messages = []
@@ -44,7 +45,7 @@ class PumpProgram:
         self.count_30 = 0
         self.count_10_60 = 0
         self.count_5 = 0
-        self.start_server(5554)
+        self.start_server(5551)
         return
     def start_server(self,port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -65,8 +66,10 @@ class PumpProgram:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             s.connect((self.IP, self.port))
-        except:
+        except Exception as e:
+            print(e)
             return False
+        message += "\r\n"
         s.send(message.encode())
         s.close()
         return True
@@ -187,8 +190,7 @@ class PumpProgram:
         #get battery voltage
         self.battery_level = self.batteryVolt2Level(battery_voltage)
 
-        #log general device info
-        self.logDeviceInfo(self.battery_level,self.reservoir_level)
+
 
     def loop10Minute(self):
         
@@ -272,10 +274,11 @@ class PumpProgram:
         #check if the amount of insulin that was injected was how much that left the reservoir
         if(reservoir_difference != insulin_steps*10):
             self.logIssue("Incorrect amount of insulin amount injected.")
-
+        #log general device info
+        self.logDeviceInfo(self.battery_level,self.reservoir_level)
     def logInsulinInjected(self,actually_injected, desired_amount, is_manual):
         self.e.print("Insulin Log", "{ Actual: "+str(actually_injected)+"mL, Desired: "+str(desired_amount)+", Manual: "+str(is_manual)+" }.")
-        self.send("INSULIN "+str(self.e.getDatetime(self.e.getTime()))+" "+str(actually_injected)+" "+str(desired_amount)+" "+str(is_manual))
+        self.send("INSULIN "+str(self.e.getDatetime(self.e.getTime()))+" "+str(self.DEVICE_ID)+" "+str(actually_injected)+" "+str(desired_amount)+" "+str(is_manual))
 
         return
     def logIssue(self,issue):
@@ -283,7 +286,7 @@ class PumpProgram:
         if(len(self.messages) >= self.MAX_MESSAGES):
             self.messages.pop(0)
         #later add connection and send to app
-        self.send("ISSUE "+str(self.e.getDatetime(self.e.getTime()))+" {{{"+str(issue)+"}}}")
+        self.send("ISSUE "+str(self.e.getDatetime(self.e.getTime()))+" "+str(self.DEVICE_ID)+" "+" {{{"+str(issue)+"}}}")
 
         #trigger alarm
         self.e.alarmSetState(True)
@@ -293,12 +296,12 @@ class PumpProgram:
         
         return True
     def logBloodSugar(self,blood_sugar):
-        self.send("BLOOD "+str(self.e.getDatetime(self.e.getTime()))+" "+str(blood_sugar))
+        self.send("BLOOD "+str(self.e.getDatetime(self.e.getTime()))+" "+str(self.DEVICE_ID)+" "+str(int(round(blood_sugar))))
 
         self.e.print("Blood Log",str(blood_sugar)+"cc/L }.")
         return
     def logDeviceInfo(self,battery_level, reservoir_level):
-        self.send("DEVICE_INFO "+str(self.e.getDatetime(self.e.getTime()))+" "+str(round(battery_level,1))+" "+str(reservoir_level))
+        self.send("DEVICE_INFO "+str(self.e.getDatetime(self.e.getTime()))+" "+str(self.DEVICE_ID)+" "+str(int(round(battery_level,0)))+" "+str(reservoir_level))
         self.e.print("Info Log","{"+str(round(battery_level,0))+"%, "+str(reservoir_level)+"mL }.")
         return
     def conductivity2sugar(self,conductivity):
@@ -323,7 +326,7 @@ e = Emulator("Emulator1")
 e.printSetup(20)
 e.print_on = False
 p = PumpProgram(e)
-p.connectionSetup("localhost", 5555)
+p.connectionSetup("localhost", 5001)
 e.time_multiplier = 5
 e.display_print = False
 while(True):

@@ -63,7 +63,7 @@
                 android:textSize="12sp"
                 android:paddingLeft="10dp"
                 tools:ignore="RtlHardcoded"
-                android:onClick="bloodHistoryClocked"/>
+                android:onClick="bloodHistoryClicked"/>
             <Button
                 android:id="@+id/MainScreenMessages"
                 android:layout_width="150dp"

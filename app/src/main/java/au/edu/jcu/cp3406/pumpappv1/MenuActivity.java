@@ -21,7 +21,7 @@ public class MenuActivity extends AppCompatActivity {
         startActivityForResult(intentUserProfile, result);
     }
 
-    public void bloodHistoryClocked(View view) {
+    public void bloodHistoryClicked(View view) {
         Intent intentBloodHistory = new Intent(this, PastBloodsugarActivity.class);
         final int result = 2;
         startActivityForResult(intentBloodHistory, result);
