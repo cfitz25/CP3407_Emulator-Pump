@@ -210,20 +210,20 @@ class Emulator:
         return False
 
 
-emulator = Emulator("emulator")
-emulator.activatePump()
-start = time.time()
-diff = time.time() - start
-while diff < 10:
-    emulator.setTime(time.time())
-    emulator.run()
-    if (diff>= 6):
-        emulator.deactivatePump()
-    elif (diff >= 5):
-        state = emulator.selfTestPump()
-        print("Is Pump Functional? " + str(state))
-    print("Blood Sugar    : " + str(emulator.blood_sugar) + " mmol/L \nInsulin Count  : " + str(
-        emulator.insulin_count) + "\n" + "Pump Funcional : " + str(
-        emulator.pump_functional) + "\n" + "Pumnp Active   : " + str(emulator.pump_active) + "\n")
-    diff = time.time() - start
-    time.sleep(1)
+# emulator = Emulator("emulator")
+# emulator.activatePump()
+# start = time.time()
+# diff = time.time() - start
+# while diff < 10:
+#     emulator.setTime(time.time())
+#     emulator.run()
+#     if (diff>= 6):
+#         emulator.deactivatePump()
+#     elif (diff >= 5):
+#         state = emulator.selfTestPump()
+#     #     print("Is Pump Functional? " + str(state))
+#     # print("Blood Sugar    : " + str(emulator.blood_sugar) + " mmol/L \nInsulin Count  : " + str(
+#     #     emulator.insulin_count) + "\n" + "Pump Funcional : " + str(
+#     #     emulator.pump_functional) + "\n" + "Pumnp Active   : " + str(emulator.pump_active) + "\n")
+#     diff = time.time() - start
+#     time.sleep(1)
