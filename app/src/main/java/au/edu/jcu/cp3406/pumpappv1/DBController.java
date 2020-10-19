@@ -11,9 +11,18 @@ import java.util.ArrayList;
 public class DBController {
     Context context;
     myDbHelper myhelper;
+    private static DBController instance;
+    public static DBController getInstance(){
+        return instance;
+    }
+    private static void setInstance(DBController inst){
+        DBController.instance = inst;
+    }
     public DBController(Context context){
         this.context = context;
         myhelper = new myDbHelper(context);
+        DBController.setInstance(this);
+
     }
     public boolean connectRemote(String address, String username, String password){
         return false;

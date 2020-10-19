@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         db = new DBController(this);
-        tcp = new TCPController(5000,db);
+        tcp = new TCPController(5000,5002);
         Thread thread = new Thread(tcp);
         thread.start();
     }
@@ -42,7 +42,15 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Vals",vals.toString());
         vals = db.getInfoEntries();
         Log.i("Vals",vals.toString());
+        new Thread(new TriggerManualThread()).start();
 
+    }
+    class TriggerManualThread implements Runnable{
+
+        @Override
+        public void run() {
+            tcp.triggerManual();
+        }
     }
     public void userProfileClicked(View view) {
     }

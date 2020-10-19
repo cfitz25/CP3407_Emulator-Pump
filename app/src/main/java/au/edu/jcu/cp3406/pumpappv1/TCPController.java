@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
@@ -14,29 +16,46 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class TCPController implements Runnable{
-    String pump_address;
+    InetAddress pump_address;
+    int pump_port;
     private BufferedReader input;
     DBController db;
-    int pump_port;
     int server_port;
     ArrayList<String> recv_buffer;
     ServerSocket server_socket;
     SimpleDateFormat sdf;
-    public TCPController(int listening_port, DBController db){
-        server_port = listening_port;
-        recv_buffer = new ArrayList<>();
-        this.db = db;
-        sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+    private static TCPController instance;
+    public static TCPController getInstance(){
+        return instance;
     }
-    public boolean connect(String address, int port){
-        pump_address = address;
-        pump_port = port;
-
+    public static void setInstance(TCPController inst){
+        TCPController.instance = inst;
+    }
+    public TCPController(int listening_port, int pump_port){
+        server_port = listening_port;
+        this.pump_port = pump_port;
+        recv_buffer = new ArrayList<>();
+        sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+        TCPController.setInstance(this);
+    }
+    public boolean triggerManual(){
+        try {
+            Socket socket = new Socket(pump_address, pump_port);
+            PrintWriter output = new PrintWriter(socket.getOutputStream());
+            output.write("TRIGGER_MANUAL");
+            output.flush();
+            output.close();
+//            socket.close();
+            return true;
+        }catch (IOException e){
+            Log.e("Manual Trigger",e.toString());
+        }
         return false;
     }
     @Override
     public void run() {
         Socket socket;
+        DBController db = DBController.getInstance();
         while(true){
             try {
                 if(server_socket == null ){
@@ -48,6 +67,8 @@ public class TCPController implements Runnable{
                 }else{
 
                     socket = server_socket.accept();
+                    pump_address = socket.getInetAddress();
+                    Log.i("Socket run",pump_address.toString());
 //                    Log.i("Socket run",socket.getInetAddress().toString());
                     input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     while (socket.isConnected()) {

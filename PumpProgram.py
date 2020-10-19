@@ -45,7 +45,7 @@ class PumpProgram:
         self.count_30 = 0
         self.count_10_60 = 0
         self.count_5 = 0
-        self.start_server(5551)
+        self.start_server(5002)
         return
     def start_server(self,port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -59,8 +59,10 @@ class PumpProgram:
         self.port = port
     def recvProcess(self,sock):
         message = sock.recv(1024).decode()
+        print("RECV MANUAL",message)
         if(message == "TRIGGER_MANUAL"):
             self.trigger_manual = True
+            
         sock.close()
     def send(self,message):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -194,7 +196,7 @@ class PumpProgram:
 
     def loop10Minute(self):
         
-
+        print("TRIGGERED")
         #get the conductivity and turn it into blood sugar
         conductivity = self.e.getConductivity()
         blood_sugar = self.conductivity2sugar(conductivity)
