@@ -4,17 +4,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     DBController db;
     TCPController tcp;
+    Handler handler;
+    private TextView bloodTV;
+    private TextView insulinLeftTV;
+    private TextView insulinTodayTV;
+    private TextView batteryTV;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +32,41 @@ public class MainActivity extends AppCompatActivity {
         tcp = new TCPController(5000,5002);
         Thread thread = new Thread(tcp);
         thread.start();
+
+        bloodTV=(TextView)findViewById(R.id.bloodSugarView);
+        insulinLeftTV=(TextView)findViewById(R.id.InsulinLeftView);
+        insulinTodayTV=(TextView)findViewById(R.id.InsulinTodayView);
+        batteryTV=(TextView)findViewById(R.id.batteryView);
+
+        handler = new Handler();
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<ArrayList<Object>> vals = db.getBloodEntries();
+                if(vals.size() > 0){
+                    bloodTV.setText(vals.get(0).get(3).toString());
+                }
+                vals = db.getInfoEntries();
+                if(vals.size() > 0){
+                    batteryTV.setText(vals.get(0).get(3).toString());
+                    insulinLeftTV.setText(vals.get(0).get(4).toString());
+                }
+                vals = db.getInjectionEntries();
+                if(vals.size() > 0){
+                    int sum = 0;
+                    Calendar cal = Calendar.getInstance();
+                    for (int i = 0;i < vals.size();i++){
+                        if(DateUtils.isToday(Long.parseLong(vals.get(i).get(2).toString()))){
+                            sum += Long.parseLong(vals.get(i).get(3).toString());
+                        }
+                    }
+                    insulinTodayTV.setText(sum);
+                }
+                Log.i("LOOPIN", "LOOP");
+                handler.postDelayed(this, 1000); //  delay one second before updating the number
+            }
+        };
+        handler.postDelayed(r, 1000); //  delay one second before updating the number
     }
 
     public void menuClicked(View view) {

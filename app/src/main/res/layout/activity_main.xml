@@ -112,7 +112,7 @@
                     android:background="@drawable/border"
                     android:fontFamily="sans-serif-smallcaps"
                     android:gravity="center_vertical|left"
-                    android:text="Insulin Today (mL):"
+                    android:text="Insulin Left (mL):"
                     android:textSize="12sp"
                     tools:ignore="RtlHardcoded" />
             </LinearLayout>

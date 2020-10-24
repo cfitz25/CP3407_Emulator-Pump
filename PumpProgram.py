@@ -208,7 +208,8 @@ class PumpProgram:
 
         #send blood sugar to app
         self.logBloodSugar(blood_sugar)
-
+        #log general device info
+        self.logDeviceInfo(self.battery_level,self.reservoir_level)
         inject_insulin = False
 
         #get change in blood sugar levels
@@ -276,8 +277,7 @@ class PumpProgram:
         #check if the amount of insulin that was injected was how much that left the reservoir
         if(reservoir_difference != insulin_steps*10):
             self.logIssue("Incorrect amount of insulin amount injected.")
-        #log general device info
-        self.logDeviceInfo(self.battery_level,self.reservoir_level)
+
     def logInsulinInjected(self,actually_injected, desired_amount, is_manual):
         self.e.print("Insulin Log", "{ Actual: "+str(actually_injected)+"mL, Desired: "+str(desired_amount)+", Manual: "+str(is_manual)+" }.")
         self.send("INSULIN "+str(self.e.getDatetime(self.e.getTime()))+" "+str(self.DEVICE_ID)+" "+str(actually_injected)+" "+str(desired_amount)+" "+str(is_manual))
