@@ -13,3 +13,6 @@ __pycache__/Emulator.cpython-37.pyc
 /captures
 .externalNativeBuild
 .cxx
+.gradle
+.idea
+app
