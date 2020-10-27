@@ -47,7 +47,7 @@ public class TCPController implements Runnable{
             output.close();
 //            socket.close();
             return true;
-        }catch (IOException e){
+        }catch (Exception e){
             Log.e("Manual Trigger",e.toString());
         }
         return false;

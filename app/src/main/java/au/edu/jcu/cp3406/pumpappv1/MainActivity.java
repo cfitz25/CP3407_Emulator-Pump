@@ -3,6 +3,7 @@ package au.edu.jcu.cp3406.pumpappv1;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.format.DateUtils;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     DBController db;
     TCPController tcp;
     Handler handler;
+    SQLiteDatabase d;
     private TextView bloodTV;
     private TextView insulinLeftTV;
     private TextView insulinTodayTV;
@@ -38,20 +40,21 @@ public class MainActivity extends AppCompatActivity {
         insulinTodayTV=(TextView)findViewById(R.id.InsulinTodayView);
         batteryTV=(TextView)findViewById(R.id.batteryView);
 
+//        d = db.getReadable();
         handler = new Handler();
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                ArrayList<ArrayList<Object>> vals = db.getBloodEntries();
+                ArrayList<ArrayList<Object>> vals = db.getBloodEntries(1);
                 if(vals.size() > 0){
                     bloodTV.setText(vals.get(0).get(3).toString());
                 }
-                vals = db.getInfoEntries();
+                vals = db.getInfoEntries(1);
                 if(vals.size() > 0){
                     batteryTV.setText(vals.get(0).get(3).toString());
                     insulinLeftTV.setText(vals.get(0).get(4).toString());
                 }
-                vals = db.getInjectionEntries();
+                vals = db.getInjectionEntries(1);
                 if(vals.size() > 0){
                     int sum = 0;
                     Calendar cal = Calendar.getInstance();
@@ -60,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                             sum += Long.parseLong(vals.get(i).get(3).toString());
                         }
                     }
-                    insulinTodayTV.setText(sum);
+                    insulinTodayTV.setText(String.valueOf(sum));
                 }
                 Log.i("LOOPIN", "LOOP");
                 handler.postDelayed(this, 1000); //  delay one second before updating the number

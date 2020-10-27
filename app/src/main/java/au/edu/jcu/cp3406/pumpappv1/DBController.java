@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -23,6 +24,9 @@ public class DBController {
         myhelper = new myDbHelper(context);
         DBController.setInstance(this);
 
+    }
+    public SQLiteDatabase getReadable(){
+        return myhelper.getReadableDatabase();
     }
     public boolean connectRemote(String address, String username, String password){
         return false;
@@ -65,11 +69,15 @@ public class DBController {
         long id = dbb.insert(myDbHelper.ISSUE_TABLE_NAME, null , contentValues);
         return id;
     }
-    public ArrayList<ArrayList<Object> >  getBloodEntries(){
-        SQLiteDatabase db = myhelper.getWritableDatabase();
+    public ArrayList<ArrayList<Object> >  getBloodEntries() {
+        return getBloodEntries(0);
+    }
+    public ArrayList<ArrayList<Object> >  getBloodEntries(int entries){
+        SQLiteDatabase db = myhelper.getReadableDatabase();
         String[] columns = {myDbHelper.BLOOD_ENTRY,myDbHelper.DEVICE,myDbHelper.TIME,myDbHelper.BLOOD_SUGAR};
-        Cursor cursor =db.query(myDbHelper.BLOOD_TABLE_NAME,columns,null,null,null,null,null);
+        Cursor cursor =db.query(myDbHelper.BLOOD_TABLE_NAME,columns,null,null,null,null,myDbHelper.BLOOD_ENTRY);
         ArrayList<ArrayList<Object> > buffer= new ArrayList<>();
+        int _entries = 0;
         while (cursor.moveToNext())
         {
             ArrayList<Object>  tmp = new ArrayList<>();
@@ -78,14 +86,23 @@ public class DBController {
                 tmp.add(cursor.getLong(cursor.getColumnIndex(i)));
             }
             buffer.add(tmp);
+            _entries++;
+            if(entries != 0 && _entries >= entries){
+                break;
+            }
         }
+        db.close();
         return buffer;
     }
-    public ArrayList<ArrayList<Object> >  getInjectionEntries(){
-        SQLiteDatabase db = myhelper.getWritableDatabase();
+    public ArrayList<ArrayList<Object> >  getInjectionEntries() {
+        return getInjectionEntries(0);
+    }
+    public ArrayList<ArrayList<Object> >  getInjectionEntries(int entries){
+        SQLiteDatabase db = myhelper.getReadableDatabase();
         String[] columns = {myDbHelper.INJECTION_ENTRY,myDbHelper.DEVICE,myDbHelper.TIME,myDbHelper.DOSAGE,myDbHelper.IS_MANUAL};
-        Cursor cursor =db.query(myDbHelper.INJECTION_TABLE_NAME,columns,null,null,null,null,null);
+        Cursor cursor =db.query(myDbHelper.INJECTION_TABLE_NAME,columns,null,null,null,null,myDbHelper.INJECTION_ENTRY);
         ArrayList<ArrayList<Object> > buffer= new ArrayList<>();
+        int _entries = 0;
         while (cursor.moveToNext())
         {
             ArrayList<Object>  tmp = new ArrayList<>();
@@ -94,30 +111,48 @@ public class DBController {
                 tmp.add(cursor.getLong(cursor.getColumnIndex(i)));
             }
             buffer.add(tmp);
+            _entries++;
+            if(entries != 0 && _entries >= entries){
+                break;
+            }
         }
+        db.close();
         return buffer;
     }
-    public ArrayList<ArrayList<Object> >  getIssueEntries(){
-        SQLiteDatabase db = myhelper.getWritableDatabase();
+    public ArrayList<ArrayList<Object> >  getIssueEntries() {
+        return getIssueEntries(0);
+    }
+    public ArrayList<ArrayList<Object> >  getIssueEntries(int entries){
+        SQLiteDatabase db = myhelper.getReadableDatabase();
         String[] columns = {myDbHelper.ISSUE_ENTRY,myDbHelper.DEVICE,myDbHelper.TIME,myDbHelper.ISSUE};
-        Cursor cursor =db.query(myDbHelper.ISSUE_TABLE_NAME,columns,null,null,null,null,null);
+        Cursor cursor =db.query(myDbHelper.ISSUE_TABLE_NAME,columns,null,null,null,null,myDbHelper.ISSUE_ENTRY);
         ArrayList<ArrayList<Object> > buffer= new ArrayList<>();
+        int _entries = 0;
         while (cursor.moveToNext())
         {
             ArrayList<Object>  tmp = new ArrayList<>();
-            for (String i:
-                    columns) {
-                tmp.add(cursor.getLong(cursor.getColumnIndex(i)));
-            }
+            tmp.add(cursor.getLong(cursor.getColumnIndex(myDbHelper.ISSUE_ENTRY)));
+            tmp.add(cursor.getLong(cursor.getColumnIndex(myDbHelper.DEVICE)));
+            tmp.add(cursor.getLong(cursor.getColumnIndex(myDbHelper.TIME)));
+            tmp.add(cursor.getString(cursor.getColumnIndex(myDbHelper.ISSUE)));
             buffer.add(tmp);
+            _entries++;
+            if(entries != 0 && _entries >= entries){
+                break;
+            }
         }
+        db.close();
         return buffer;
     }
-    public ArrayList<ArrayList<Object>>  getInfoEntries(){
-        SQLiteDatabase db = myhelper.getWritableDatabase();
+    public ArrayList<ArrayList<Object> >  getInfoEntries() {
+        return getInfoEntries(0);
+    }
+    public ArrayList<ArrayList<Object>>  getInfoEntries(int entries){
+        SQLiteDatabase db = myhelper.getReadableDatabase();
         String[] columns = {myDbHelper.INFO_ENTRY,myDbHelper.DEVICE,myDbHelper.TIME,myDbHelper.BATTERY,myDbHelper.INSULIN_AMOUNT};
-        Cursor cursor =db.query(myDbHelper.INFO_TABLE_NAME,columns,null,null,null,null,null);
+        Cursor cursor =db.query(myDbHelper.INFO_TABLE_NAME,columns,null,null,null,null,myDbHelper.INFO_ENTRY);
         ArrayList<ArrayList<Object>> buffer= new ArrayList<>();
+        int _entries = 0;
         while (cursor.moveToNext())
         {
             ArrayList<Object> tmp = new ArrayList<>();
@@ -126,7 +161,12 @@ public class DBController {
                 tmp.add(cursor.getLong(cursor.getColumnIndex(i)));
             }
             buffer.add(tmp);
+            _entries++;
+            if(entries != 0 && _entries >= entries){
+                break;
+            }
         }
+        db.close();
         return buffer;
     }
     static class myDbHelper extends SQLiteOpenHelper
