@@ -24,19 +24,18 @@ class Emulator:
         self.reservoir_connected = True
         self.blood_conductivity = 0.5
         self.insulin_count = 0
-        self.blood_sugar = 0
+        self.blood_sugar = 500
 
     def bodyCalc(self):
-        multiplier = round(self.time_diff)
-        if self.pump_functional & self.reservoir_connected & self.sensor_functional & self.needle_connected & self.pump_active:
-            self.insulin_count += multiplier
-            self.reservoir_level -= multiplier
-            self.blood_sugar += self.insulin_count + self.blood_conductivity
+        multiplier = self.time_diff
         if not self.pump_active:
-            self.blood_sugar -= multiplier
-            self.insulin_count -= multiplier
+            self.blood_sugar -= 0.1
+            self.insulin_count -= 0.1
         if not self.reservoir_connected or not self.needle_connected:
             self.pump_functional = False
+        
+        self.blood_conductivity = 0.1*self.blood_sugar
+
 
     def run(self):
         self.TIME_NOW = time.time()
@@ -49,6 +48,8 @@ class Emulator:
                 self.needle_connected = False
             if self.time_diff > 40:
                 self.reservoir_connected = False
+        else:
+            self.start_time = self.TIME_NOW
 
     def getTime(self):
         global TIME_NOW
@@ -129,8 +130,13 @@ class Emulator:
     # makes the pump inject 10mL of insulin
     def activatePump(self):
         print("Pump Activated.")
+        multiplier = 10
         self.pump_active = True
-
+        if self.pump_functional & self.reservoir_connected & self.sensor_functional & self.needle_connected & self.pump_active:
+            self.insulin_count += multiplier
+            self.reservoir_level -= multiplier
+            self.blood_sugar += self.insulin_count + self.blood_sugar
+            print("INEJCTED")
     def deactivatePump(self):
         print("Pump De-activated.")
         self.pump_active = False

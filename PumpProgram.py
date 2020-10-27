@@ -1,5 +1,6 @@
 from Emulator import *
 import socket
+import threading
 class PumpProgram:
     #screen positions
     DISPPOS_SUGAR = (0,0)
@@ -260,10 +261,10 @@ class PumpProgram:
         current_reservoir_level = self.e.reservoirLevel()
 
         #inject the required amount of insulin
-        for i in insulin_steps:
+        for i in range(int(insulin_steps)):
             self.e.activatePump()
             time.sleep(0.1)
-            self.e.dectivatePump()
+            self.e.deactivatePump()
         #get the new reservoir level and the difference between it and the old reservoir level
         self.reservoir_level = self.e.reservoirLevel()
     
@@ -323,7 +324,10 @@ class PumpProgram:
         res = (volt-self.BATT_MIN_VOLTAGE)/(self.BATT_MAX_VOLTAGE-self.BATT_MIN_VOLTAGE) * 100
         self.e.print("Battery",str(volt)+"V -> "+str(round(res,0))+"%.")
         return res
-    
+
+def trun(e):
+    while(True):
+        e.run() 
 e = Emulator("Emulator1")
 e.printSetup(20)
 e.print_on = False
@@ -331,9 +335,12 @@ p = PumpProgram(e)
 p.connectionSetup("localhost", 5001)
 e.time_multiplier = 5
 e.display_print = False
+# x = threading.Thread(target=trun,args=(e,))
+# x.start()
 while(True):
     p.mainLoop()
-    time.sleep(1/20)
+    e.run()
+    time.sleep(1/40)
 
 # p.send("Test 1")
 # p.send("Test 2")
