@@ -45,16 +45,16 @@ public class MainActivity extends AppCompatActivity {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                ArrayList<ArrayList<Object>> vals = db.getBloodEntries(1);
+                ArrayList<ArrayList<Object>> vals = db.getBloodEntries(2);
                 if(vals.size() > 0){
                     bloodTV.setText(vals.get(0).get(3).toString());
                 }
-                vals = db.getInfoEntries(1);
+                vals = db.getInfoEntries(2);
                 if(vals.size() > 0){
                     batteryTV.setText(vals.get(0).get(3).toString());
                     insulinLeftTV.setText(vals.get(0).get(4).toString());
                 }
-                vals = db.getInjectionEntries(1);
+                vals = db.getInjectionEntries();
                 if(vals.size() > 0){
                     int sum = 0;
                     Calendar cal = Calendar.getInstance();
@@ -66,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
                     insulinTodayTV.setText(String.valueOf(sum));
                 }
                 Log.i("LOOPIN", "LOOP");
-                handler.postDelayed(this, 1000); //  delay one second before updating the number
+                handler.postDelayed(this, 10000); //  delay one second before updating the number
             }
         };
-        handler.postDelayed(r, 1000); //  delay one second before updating the number
+        handler.postDelayed(r, 10000); //  delay one second before updating the number
     }
 
     public void menuClicked(View view) {
@@ -82,13 +82,13 @@ public class MainActivity extends AppCompatActivity {
         Message.message(this,"PRESS");
 //        long id = db.insertBloodEntry(1,1,1);
         ArrayList<ArrayList<Object>> vals = db.getInjectionEntries();
-        Log.i("Vals",vals.toString());
+        Log.i("Inject",vals.toString());
         vals = db.getIssueEntries();
-        Log.i("Vals",vals.toString());
+        Log.i("Issue",vals.toString());
         vals = db.getBloodEntries();
-        Log.i("Vals",vals.toString());
+        Log.i("Blood",vals.toString());
         vals = db.getInfoEntries();
-        Log.i("Vals",vals.toString());
+        Log.i("Info",vals.toString());
         new Thread(new TriggerManualThread()).start();
 
     }

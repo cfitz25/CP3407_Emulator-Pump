@@ -99,11 +99,11 @@ public class TCPController implements Runnable{
                                     Log.i("Issue",issue);
                                     long id = db.insertIssueEntry(device_id,datetime.getTime()/1000,issue);
                                 } else if (split_msg[0].equals("BLOOD")) {
-                                    int blood_sugar = Integer.parseInt(split_msg[3]);
+                                    int blood_sugar = Integer.parseInt(split_msg[4]);
                                     long id = db.insertBloodEntry(device_id,datetime.getTime()/1000,blood_sugar);
                                 } else if (split_msg[0].equals("DEVICE_INFO")) {
                                     int battery = Integer.parseInt(split_msg[4]);
-                                    int insulin = Integer.parseInt(split_msg[3]);
+                                    int insulin = Integer.parseInt(split_msg[5]);
                                     long id = db.insertInfoEntry(device_id,datetime.getTime()/1000,battery,insulin);
                                 } else {
                                     //no clue bruh

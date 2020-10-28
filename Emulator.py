@@ -24,32 +24,46 @@ class Emulator:
         self.reservoir_connected = True
         self.blood_conductivity = 0.5
         self.insulin_count = 0
-        self.blood_sugar = 500
+        self.blood_sugar = 20
+
+        self.count = 0
 
     def bodyCalc(self):
         multiplier = self.time_diff
-        if not self.pump_active:
-            self.blood_sugar -= 0.1
-            self.insulin_count -= 0.1
-        if not self.reservoir_connected or not self.needle_connected:
-            self.pump_functional = False
         
-        self.blood_conductivity = 0.1*self.blood_sugar
+        self.blood_sugar += (0.003*self.blood_sugar - 0.5*self.insulin_count)*0.1
+        self.insulin_count -= 1
+        if(self.blood_sugar < 0):
+            self.blood_sugar = 0
+        if(self.insulin_count <= 0):
+            self.insulin_count = 0
+        self.count += 1
+        if(self.count > 5):
+            self.print("BLOOD SUGAR",str(self.blood_sugar)+" "+str(self.insulin_count))
+            self.count = 0
+        # if not self.reservoir_connected or not self.needle_connected:
+        #     self.pump_functional = False
+        # else:
+        #     self.pump_functional = True
+        
+        self.blood_conductivity = self.blood_sugar
 
 
     def run(self):
         self.TIME_NOW = time.time()
-        self.time_diff = self.start_time - self.TIME_NOW
+        self.time_diff = self.TIME_NOW - self.start_time 
+        # print(self.time_diff)
         if self.time_diff < 60:
             self.TIME_NOW = time.time()
             self.time_diff = self.TIME_NOW - self.start_time
             self.bodyCalc()
-            if self.time_diff > 30:
-                self.needle_connected = False
-            if self.time_diff > 40:
-                self.reservoir_connected = False
+            self.needle_connected = not(self.time_diff > 45 and self.time_diff < 50)
+            
+            self.reservoir_connected = not(self.time_diff > 55)
         else:
             self.start_time = self.TIME_NOW
+        if(self.reservoir_level <= 0):
+            self.reservoir_level = 100
 
     def getTime(self):
         global TIME_NOW
@@ -73,77 +87,77 @@ class Emulator:
     # Emulator -> Program
     # returns conductivity of blood sensor (INT)
     def getConductivity(self):
-        print("Blood Conductivity: " + str(self.blood_conductivity))
+        # print("Blood Conductivity: " + str(self.blood_conductivity))
         return self.blood_conductivity
 
     # returns if the reservoir is connected (BOOL)
     def reservoirConnected(self):
-        print("Reservoir Connected: " + str(self.reservoir_connected))
+        # print("Reservoir Connected: " + str(self.reservoir_connected))
         return self.reservoir_connected
 
     # returns the level of the reservoir (INT)
     def reservoirLevel(self):
-        print("Reservoir Level: " + str(self.reservoir_level))
+        # print("Reservoir Level: " + str(self.reservoir_level))
         return self.reservoir_level
 
     # returns the results of the blood sensor self test (BOOL)
     def bloodSensorFunctional(self):
-        print("Blood Sensor Functional: " + str(self.sensor_functional))
+        # print("Blood Sensor Functional: " + str(self.sensor_functional))
         return self.sensor_functional
 
     # returns the result of the pump self test (BOOL)
     def pumpFunctional(self):
-        print("Pump Functional: " + str(self.pump_functional))
+        # print("Pump Functional: " + str(self.pump_functional))
         return self.pump_functional
 
     # returns the voltage of the battery (INT)
     def batteryVoltage(self):
-        print("Battery Voltage: " + str(self.battery_voltage))
+        # print("Battery Voltage: " + str(self.battery_voltage))
         return self.battery_voltage
 
     # returns the conductivity of the liquid in the needle (INT)
     def needleInternalConductivity(self):
-        print("Needle Conductivity: " + str(self.needle_conductivity))
+        # print("Needle Conductivity: " + str(self.needle_conductivity))
         return self.needle_conductivity
 
     # returns if the needle is connected (BOOL)
     def needleConnected(self):
-        print("Needle Connected: " + str(self.needle_connected))
+        # print("Needle Connected: " + str(self.needle_connected))
         return self.needle_connected
 
     # returns the state of the manual button
     def manualButton(self):
-        print("Manual Button State: " + str(self.button_state))
+        # print("Manual Button State: " + str(self.button_state))
         return False
 
     # Program -> Emulator
     # starts a self test of the pump
     def selfTestPump(self):
-        print("Self Test Pump started.")
+        # print("Self Test Pump started.")
         return False
 
     # starts a self test of the blood sensor
     def selfTestBloodSensor(self):
-        print("Self Test Sensor started.")
+        # print("Self Test Sensor started.")
         return False
 
     # makes the pump inject 10mL of insulin
     def activatePump(self):
-        print("Pump Activated.")
+        # print("Pump Activated.")
         multiplier = 10
         self.pump_active = True
         if self.pump_functional & self.reservoir_connected & self.sensor_functional & self.needle_connected & self.pump_active:
             self.insulin_count += multiplier
             self.reservoir_level -= multiplier
-            self.blood_sugar += self.insulin_count + self.blood_sugar
-            print("INEJCTED")
+            
+            # print("INEJCTED")
     def deactivatePump(self):
-        print("Pump De-activated.")
+        # print("Pump De-activated.")
         self.pump_active = False
 
     # sets the state of the alarm
     def alarmSetState(self,state):
-        print("Alarm: " + str(state))
+        # print("Alarm: " + str(state))
         return False
 
     # write text to the display at position (x,y)

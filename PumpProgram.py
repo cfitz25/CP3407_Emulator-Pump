@@ -21,7 +21,7 @@ class PumpProgram:
     last_injection = (0,0)
     total_insulin_today = 0
     #battery
-    BATT_MAX_VOLTAGE = 3.3
+    BATT_MAX_VOLTAGE = 5
     BATT_MIN_VOLTAGE = 1.2
     battery_level = 2
     #reservoir
@@ -316,7 +316,7 @@ class PumpProgram:
     def sugar2insulin(self,sugar):
 
         #calculate insulin from sugar
-        res = sugar
+        res = sugar - 20
         self.e.print("Insulin",str(sugar)+"cc/L -> "+str(res)+"mL.")
         return res
     def batteryVolt2Level(self,volt):
@@ -330,7 +330,7 @@ def trun(e):
         e.run() 
 e = Emulator("Emulator1")
 e.printSetup(20)
-e.print_on = False
+e.print_on = True
 p = PumpProgram(e)
 p.connectionSetup("localhost", 5001)
 e.time_multiplier = 5
@@ -340,7 +340,7 @@ e.display_print = False
 while(True):
     p.mainLoop()
     e.run()
-    time.sleep(1/40)
+    time.sleep(1/20)
 
 # p.send("Test 1")
 # p.send("Test 2")

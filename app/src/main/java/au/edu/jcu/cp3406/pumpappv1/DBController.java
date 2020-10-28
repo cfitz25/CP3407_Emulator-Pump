@@ -75,7 +75,7 @@ public class DBController {
     public ArrayList<ArrayList<Object> >  getBloodEntries(int entries){
         SQLiteDatabase db = myhelper.getReadableDatabase();
         String[] columns = {myDbHelper.BLOOD_ENTRY,myDbHelper.DEVICE,myDbHelper.TIME,myDbHelper.BLOOD_SUGAR};
-        Cursor cursor =db.query(myDbHelper.BLOOD_TABLE_NAME,columns,null,null,null,null,myDbHelper.BLOOD_ENTRY);
+        Cursor cursor =db.query(myDbHelper.BLOOD_TABLE_NAME,columns,null,null,null,null,myDbHelper.BLOOD_ENTRY+" DESC");
         ArrayList<ArrayList<Object> > buffer= new ArrayList<>();
         int _entries = 0;
         while (cursor.moveToNext())
@@ -91,7 +91,6 @@ public class DBController {
                 break;
             }
         }
-        db.close();
         return buffer;
     }
     public ArrayList<ArrayList<Object> >  getInjectionEntries() {
@@ -100,7 +99,7 @@ public class DBController {
     public ArrayList<ArrayList<Object> >  getInjectionEntries(int entries){
         SQLiteDatabase db = myhelper.getReadableDatabase();
         String[] columns = {myDbHelper.INJECTION_ENTRY,myDbHelper.DEVICE,myDbHelper.TIME,myDbHelper.DOSAGE,myDbHelper.IS_MANUAL};
-        Cursor cursor =db.query(myDbHelper.INJECTION_TABLE_NAME,columns,null,null,null,null,myDbHelper.INJECTION_ENTRY);
+        Cursor cursor =db.query(myDbHelper.INJECTION_TABLE_NAME,columns,null,null,null,null,myDbHelper.INJECTION_ENTRY+" DESC");
         ArrayList<ArrayList<Object> > buffer= new ArrayList<>();
         int _entries = 0;
         while (cursor.moveToNext())
@@ -116,7 +115,6 @@ public class DBController {
                 break;
             }
         }
-        db.close();
         return buffer;
     }
     public ArrayList<ArrayList<Object> >  getIssueEntries() {
@@ -125,7 +123,7 @@ public class DBController {
     public ArrayList<ArrayList<Object> >  getIssueEntries(int entries){
         SQLiteDatabase db = myhelper.getReadableDatabase();
         String[] columns = {myDbHelper.ISSUE_ENTRY,myDbHelper.DEVICE,myDbHelper.TIME,myDbHelper.ISSUE};
-        Cursor cursor =db.query(myDbHelper.ISSUE_TABLE_NAME,columns,null,null,null,null,myDbHelper.ISSUE_ENTRY);
+        Cursor cursor =db.query(myDbHelper.ISSUE_TABLE_NAME,columns,null,null,null,null,myDbHelper.ISSUE_ENTRY+" DESC");
         ArrayList<ArrayList<Object> > buffer= new ArrayList<>();
         int _entries = 0;
         while (cursor.moveToNext())
@@ -141,7 +139,6 @@ public class DBController {
                 break;
             }
         }
-        db.close();
         return buffer;
     }
     public ArrayList<ArrayList<Object> >  getInfoEntries() {
@@ -150,7 +147,7 @@ public class DBController {
     public ArrayList<ArrayList<Object>>  getInfoEntries(int entries){
         SQLiteDatabase db = myhelper.getReadableDatabase();
         String[] columns = {myDbHelper.INFO_ENTRY,myDbHelper.DEVICE,myDbHelper.TIME,myDbHelper.BATTERY,myDbHelper.INSULIN_AMOUNT};
-        Cursor cursor =db.query(myDbHelper.INFO_TABLE_NAME,columns,null,null,null,null,myDbHelper.INFO_ENTRY);
+        Cursor cursor =db.query(myDbHelper.INFO_TABLE_NAME,columns,null,null,null,null,myDbHelper.INFO_ENTRY+" DESC");
         ArrayList<ArrayList<Object>> buffer= new ArrayList<>();
         int _entries = 0;
         while (cursor.moveToNext())
@@ -166,7 +163,6 @@ public class DBController {
                 break;
             }
         }
-        db.close();
         return buffer;
     }
     static class myDbHelper extends SQLiteOpenHelper
