@@ -181,11 +181,10 @@
                 android:background="@drawable/border"
                 android:fontFamily="sans-serif-smallcaps"
                 android:gravity="center_vertical|left"
-                android:text="Manuel Injection"
-                android:textSize="12sp"
-                tools:ignore="RtlHardcoded"
                 android:onClick="manualButtonClicked"
-                />
+                android:text="Manual Injection"
+                android:textSize="12sp"
+                tools:ignore="RtlHardcoded" />
 
         </LinearLayout>
 
@@ -197,7 +196,7 @@
             android:paddingTop="30dp">
 
             <TextView
-                android:id="@+id/MainScreenMessages"
+                android:id="@+id/CurrentMessage"
                 android:layout_width="363dp"
                 android:layout_height="88dp"
                 android:background="@drawable/border"

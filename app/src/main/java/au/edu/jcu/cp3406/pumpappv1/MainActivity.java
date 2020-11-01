@@ -12,22 +12,12 @@ import android.os.Handler;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
     DBController db;
@@ -57,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         insulinLeftTV=(TextView)findViewById(R.id.InsulinLeftView);
         insulinTodayTV=(TextView)findViewById(R.id.InsulinTodayView);
         batteryTV=(TextView)findViewById(R.id.batteryView);
-        messagesTV = (TextView)findViewById(R.id.MainScreenMessages);
+        messagesTV = (TextView)findViewById(R.id.CurrentMessage);
         messageHistory1TV = (TextView)findViewById(R.id.MessageHistory1);
         messageHistory2TV = (TextView)findViewById(R.id.MessageHistory2);
         messageHistory3TV = (TextView)findViewById(R.id.MessageHistory3);
@@ -77,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                     bloodTV.setText(vals.get(0).get(3).toString());
                     Long millis = (Long) vals.get(0).get(2);
                     LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(millis,0,ZoneOffset.UTC);
-                    String full_string = String.format("DATE %d-%s-%d TIME %d:%d:%d",localDateTime.getDayOfMonth(), localDateTime.getMonth(), localDateTime.getYear(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond());
+                    String full_string = String.format("DATE: %d-%s-%d\n TIME: %d:%d:%d \n",localDateTime.getDayOfMonth(), localDateTime.getMonth(), localDateTime.getYear(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond());
 //                    messagesTV.setText(full_string);
 //                    Date date = new Date(millis);
 //                    SimpleDateFormat sdf = new SimpleDateFormat("EEEE,MMMM d,yyyy h:mm,a", Locale.ENGLISH);
@@ -109,22 +99,22 @@ public class MainActivity extends AppCompatActivity {
                     Long millis = (Long) vals.get(0).get(2);
                     String issue = (String) vals.get(0).get(3);
                     LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(millis,0,ZoneOffset.UTC);
-                    String full_string = String.format("DATE: %d-%s-%d TIME %d:%d:%d - %s",localDateTime.getDayOfMonth(), localDateTime.getMonth(), localDateTime.getYear(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond(),issue);
+                    String full_string = String.format("DATE: %d-%s-%d\n TIME: %d:%d:%d \n- %s",localDateTime.getDayOfMonth(), localDateTime.getMonth(), localDateTime.getYear(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond(),issue);
                     messagesTV.setText(full_string);
                     millis = (Long) vals.get(0).get(2);
                     issue = (String) vals.get(0).get(3);
                     localDateTime = LocalDateTime.ofEpochSecond(millis,0,ZoneOffset.UTC);
-                    full_string = String.format("DATE: %d-%s-%d TIME %d:%d:%d - %s",localDateTime.getDayOfMonth(), localDateTime.getMonth(), localDateTime.getYear(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond(),issue);
+                    full_string = String.format("DATE: %d-%s-%d TIME: %d:%d:%d - %s",localDateTime.getDayOfMonth(), localDateTime.getMonth(), localDateTime.getYear(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond(),issue);
                     messageHistory1TV.setText(full_string);
                     millis = (Long) vals.get(1).get(2);
                     issue = (String) vals.get(2).get(3);
                     localDateTime = LocalDateTime.ofEpochSecond(millis,0,ZoneOffset.UTC);
-                    full_string = String.format("DATE: %d-%s-%d TIME %d:%d:%d - %s",localDateTime.getDayOfMonth(), localDateTime.getMonth(), localDateTime.getYear(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond(),issue);
+                    full_string = String.format("DATE: %d-%s-%d TIME: %d:%d:%d - %s",localDateTime.getDayOfMonth(), localDateTime.getMonth(), localDateTime.getYear(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond(),issue);
                     messageHistory2TV.setText(full_string);
                     millis = (Long) vals.get(2).get(2);
                     issue = (String) vals.get(2).get(3);
                     localDateTime = LocalDateTime.ofEpochSecond(millis,0,ZoneOffset.UTC);
-                    full_string = String.format("DATE: %d-%s-%d TIME %d:%d:%d - %s",localDateTime.getDayOfMonth(), localDateTime.getMonth(), localDateTime.getYear(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond(),issue);
+                    full_string = String.format("DATE: %d-%s-%d TIME: %d:%d:%d - %s",localDateTime.getDayOfMonth(), localDateTime.getMonth(), localDateTime.getYear(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond(),issue);
                     messageHistory3TV.setText(full_string);
                 }
                 Log.i("LOOPIN", "LOOP");

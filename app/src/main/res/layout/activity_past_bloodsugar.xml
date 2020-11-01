@@ -28,7 +28,7 @@
             android:paddingTop="30dp">
 
             <TextView
-                android:id="@+id/MainScreenMessages"
+                android:id="@+id/CurrentMessage"
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/border"
