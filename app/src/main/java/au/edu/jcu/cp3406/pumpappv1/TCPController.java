@@ -130,12 +130,13 @@ public class TCPController implements Runnable{
                             } catch (Exception e) {
                                 Log.e("Socket Listen", e.toString());
                             }
-                            break;
+//                            break;
                         }
                     }
                 }
             }catch(Exception e){
 //                e.printStackTrace();
+                Log.e("Socket listen",e.toString());
             }
         }
     }

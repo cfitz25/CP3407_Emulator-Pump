@@ -84,7 +84,7 @@ class PumpProgram:
         #     print(e)
         #     return False
         message += "\r\n"
-
+        print(message)
         self.clientsocket.send(message.encode())
         return True
     def mainLoop(self):
