@@ -198,8 +198,8 @@
 
             <TextView
                 android:id="@+id/MainScreenMessages"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
+                android:layout_width="363dp"
+                android:layout_height="88dp"
                 android:background="@drawable/border"
                 android:fontFamily="sans-serif-smallcaps"
                 android:gravity="center_vertical|left"
@@ -208,23 +208,26 @@
                 tools:ignore="RtlHardcoded" />
 
             <TextView
+                android:id="@+id/MessageHistory1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:paddingTop="10dp"
-                android:text="Timestamp and message"/>
+                android:text="Timestamp and message"
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/MessageHistory2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="Timestamp and message"/>
+                android:text="Timestamp and message"
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/MessageHistory3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="Timestamp and message"/>
+                android:text="Timestamp and message"
+                android:textStyle="bold" />
 
 
         </LinearLayout>

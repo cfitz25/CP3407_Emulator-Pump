@@ -9,8 +9,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="/media/cupiditas/SSD-Big/cupiditas/Documents/University/Advanced Software Engineering/CP3407_Emulator-Pump" />
-            <option value="/media/cupiditas/SSD-Big/cupiditas/Documents/University/Advanced Software Engineering/CP3407_Emulator-Pump/app" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
