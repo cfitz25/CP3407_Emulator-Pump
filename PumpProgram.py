@@ -66,15 +66,16 @@ class PumpProgram:
             
         sock.close()
     def send(self,message):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            s.connect((self.IP, self.port))
-        except Exception as e:
-            print(e)
-            return False
+        if(not self.sock):
+            return
+        # s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # try:
+        #     s.connect((self.IP, self.port))
+        # except Exception as e:
+        #     print(e)
+        #     return False
         message += "\r\n"
-        s.send(message.encode())
-        s.close()
+        sock.send(message.encode())
         return True
     def mainLoop(self):
         self.count_10_60 += 1
