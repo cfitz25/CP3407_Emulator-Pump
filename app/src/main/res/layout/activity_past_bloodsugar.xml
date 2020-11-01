@@ -7,70 +7,8 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <LinearLayout
-
+    <ListView
+        android:id="@+id/BloodListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/border"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:padding="15dp">
-
-
-
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingTop="30dp">
-
-            <TextView
-                android:id="@+id/CurrentMessage"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/border"
-                android:fontFamily="sans-serif-smallcaps"
-                android:gravity="center_vertical|left"
-                android:text="messages"
-                android:textSize="22sp"
-                tools:ignore="RtlHardcoded" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:paddingTop="10dp"
-                android:text="Timestamp and message"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="Timestamp and message"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="Timestamp and message"/>
-
-
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text="   Device Messages   "
-        android:layout_marginLeft="15dp"
-        android:background="#ffffff"
-        android:textSize="17sp" />
-
-
-</RelativeLayout>
+        android:layout_height="wrap_content" />
+    </RelativeLayout>

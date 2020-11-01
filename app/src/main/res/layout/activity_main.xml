@@ -36,7 +36,7 @@
                     android:background="@drawable/border"
                     android:fontFamily="sans-serif-smallcaps"
                     android:gravity="center_vertical|left"
-                    android:text="Blood Sugar (co/L):"
+                    android:text="Blood Sugar (cc/L):"
                     android:textSize="12sp"
                     tools:ignore="RtlHardcoded" />
 

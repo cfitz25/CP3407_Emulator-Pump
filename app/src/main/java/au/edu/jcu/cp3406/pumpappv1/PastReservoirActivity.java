@@ -3,6 +3,8 @@ package au.edu.jcu.cp3406.pumpappv1;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -10,7 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PastReservoirActivity extends AppCompatActivity {
 
@@ -23,12 +27,25 @@ public class PastReservoirActivity extends AppCompatActivity {
         setContentView(R.layout.activity_past_reservoir);
         TextView messagesTV = (TextView) findViewById(R.id.CurrentMessage);
         db = new DBController(this);
-        ArrayList<ArrayList<Object>> vals = db.getInjectionEntries();
-        Long millis = (Long) vals.get(0).get(2);
-        Long reservoir = (Long) vals.get(0).get(3);
-        LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(millis,0, ZoneOffset.UTC);
-        @SuppressLint("DefaultLocale") String full_string = String.format("DATE: %d-%s-%d\n TIME: %d:%d:%d \n RESERVOIR LEVEL: %d",localDateTime.getDayOfMonth(), localDateTime.getMonth(), localDateTime.getYear(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond(),reservoir);
-        messagesTV.setText(full_string);
+        ArrayList<ArrayList<Object>> vals = db.getInfoEntries();
+        List<String> entry_list = new ArrayList<>();
+        Long secs;
+        Long reservoir;
+        String new_string;
+        LocalDateTime localDateTime;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String formattedDate;
+        for (int i =0; i <vals.size(); i++){
+            secs = (Long) vals.get(i).get(2);
+            reservoir= (Long) vals.get(i).get(4);
+            localDateTime = LocalDateTime.ofEpochSecond(secs,0, ZoneOffset.UTC);
+            formattedDate = localDateTime.format(dateTimeFormatter);
+            new_string = String.format("%s - RESERVOIR: %s mL", formattedDate, reservoir);
+            entry_list.add(new_string);
+        }
+        ListView listView = findViewById(R.id.ReservoirListView);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this,R.layout.activity_array,R.id.textView, entry_list);
+        listView.setAdapter(arrayAdapter);
 
     }
 }

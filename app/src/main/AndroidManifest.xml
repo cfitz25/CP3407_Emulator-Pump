@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="au.edu.jcu.cp3406.pumpappv1">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,7 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".ArrayActivity"
+            android:label="@string/title_activity_array"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <service android:name=".PumpService" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,31 +26,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".MenuActivity"
-        android:label="menu"
-        android:theme="@style/AppTheme"/>
-
-        <activity android:name=".ProfileActivity"
-        android:label="profile"
-        android:theme="@style/AppTheme"/>
-
-        <activity android:name=".PastBloodsugarActivity"
+        <activity
+            android:name=".MenuActivity"
+            android:label="menu"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ProfileActivity"
             android:label="profile"
-            android:theme="@style/AppTheme"/>
-
-        <activity android:name=".PastInjectionsActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".PastBloodsugarActivity"
             android:label="profile"
-            android:theme="@style/AppTheme"/>
-
-        <activity android:name=".PastReservoirActivity"
-        android:label="profile"
-        android:theme="@style/AppTheme"/>
-
-        <activity android:name=".PastIssuesActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".PastInjectionsActivity"
             android:label="profile"
-            android:theme="@style/AppTheme"/>
-
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".PastReservoirActivity"
+            android:label="profile"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".PastIssuesActivity"
+            android:label="profile"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

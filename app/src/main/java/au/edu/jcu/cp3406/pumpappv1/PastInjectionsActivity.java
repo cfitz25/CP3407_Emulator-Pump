@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -12,7 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PastInjectionsActivity extends AppCompatActivity {
 
@@ -23,13 +27,25 @@ public class PastInjectionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_past_injections);
-        TextView messagesTV = (TextView) findViewById(R.id.CurrentMessage);
         db = new DBController(this);
         ArrayList<ArrayList<Object>> vals = db.getInjectionEntries();
-        Long millis = (Long) vals.get(0).get(2);
-        Long insulin = (Long) vals.get(0).get(3);
-        LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(millis,0, ZoneOffset.UTC);
-        @SuppressLint("DefaultLocale") String full_string = String.format("DATE: %d-%s-%d\n TIME: %d:%d:%d \n INSULIN INJECTION: %d",localDateTime.getDayOfMonth(), localDateTime.getMonth(), localDateTime.getYear(), localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond(),insulin);
-        messagesTV.setText(full_string);
+        List<String> entry_list = new ArrayList<>();
+        Long secs;
+        Long insulin;
+        String new_string;
+        LocalDateTime localDateTime;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String formattedDate;
+        for (int i =0; i <vals.size(); i++){
+            secs = (Long) vals.get(i).get(2);
+            insulin= (Long) vals.get(i).get(3);
+            localDateTime = LocalDateTime.ofEpochSecond(secs,0, ZoneOffset.UTC);
+            formattedDate = localDateTime.format(dateTimeFormatter);
+            new_string = String.format("%s - INSULIN: %s mL", formattedDate, insulin);
+            entry_list.add(new_string);
+        }
+        ListView listView = findViewById(R.id.InsulinListView);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this,R.layout.activity_array,R.id.textView, entry_list);
+        listView.setAdapter(arrayAdapter);
     }
 }
