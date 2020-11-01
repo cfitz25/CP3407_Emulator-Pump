@@ -46,6 +46,7 @@ class PumpProgram:
         self.count_30 = 0
         self.count_10_60 = 0
         self.count_5 = 0
+        self.clientsocket = None
         self.start_server(5002)
         return
     def start_server(self,port):
@@ -59,14 +60,22 @@ class PumpProgram:
         self.IP = IP
         self.port = port
     def recvProcess(self,sock):
-        message = sock.recv(1024).decode()
+        message = ""
+        # print("TTT")
+        try:
+            message = sock.recv(1024,socket.MSG_DONTWAIT).decode()
+        except Exception as e:
+            # print(e)
+            p = 0
+        if(message == ""):
+            return
         print("RECV MANUAL",message)
         if(message == "TRIGGER_MANUAL"):
             self.trigger_manual = True
             
-        sock.close()
+        # sock.close()
     def send(self,message):
-        if(not self.sock):
+        if(not self.clientsocket):
             return
         # s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # try:
@@ -75,18 +84,28 @@ class PumpProgram:
         #     print(e)
         #     return False
         message += "\r\n"
-        sock.send(message.encode())
+
+        self.clientsocket.send(message.encode())
         return True
     def mainLoop(self):
         self.count_10_60 += 1
         self.count_30 += 1
         self.count_5 += 1
         # print(self.count_5,self.count_30,self.count_10_60)
+        reconnect = False
         try:
-            (clientsocket, address) = self.sock.accept()
-            self.recvProcess(clientsocket)
+            self.clientsocket.send("",socket.MSG_DONTWAIT);
         except:
-            p = 0
+            reconnect = True
+        if(reconnect):
+            try:
+                (self.clientsocket, address) = self.sock.accept()
+            except:
+                p = 0
+        try:
+            self.recvProcess(self.clientsocket)
+        except Exception as e:
+            print("recv issue",e)
         #run if it has been atleast 30 seconds since last run
         if(self.count_5 >= 5):
             self.count_5 = 0

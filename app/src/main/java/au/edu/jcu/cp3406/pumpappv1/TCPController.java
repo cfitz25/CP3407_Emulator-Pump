@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
@@ -20,9 +21,9 @@ public class TCPController implements Runnable{
     int pump_port;
     private BufferedReader input;
     DBController db;
-    int server_port;
     ArrayList<String> recv_buffer;
     ServerSocket server_socket;
+    Socket client_socket;
     SimpleDateFormat sdf;
     private static TCPController instance;
     public static TCPController getInstance(){
@@ -31,8 +32,13 @@ public class TCPController implements Runnable{
     public static void setInstance(TCPController inst){
         TCPController.instance = inst;
     }
-    public TCPController(int listening_port, int pump_port){
-        server_port = listening_port;
+    public TCPController(String pump_address, int pump_port){
+
+        try {
+            this.pump_address = InetAddress.getByName(pump_address);
+        }catch(Exception e){
+            Log.e("TCP Connect",e.toString());
+        }
         this.pump_port = pump_port;
         recv_buffer = new ArrayList<>();
         sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
@@ -40,12 +46,17 @@ public class TCPController implements Runnable{
     }
     public boolean triggerManual(){
         try {
-            Socket socket = new Socket(pump_address, pump_port);
-            PrintWriter output = new PrintWriter(socket.getOutputStream());
+//            Socket socket = new Socket(pump_address, pump_port);
+            if(client_socket == null){
+                Log.e("Manual Trigger","invalid client socket");
+                return false;
+            }
+            PrintWriter output = new PrintWriter(client_socket.getOutputStream());
             output.write("TRIGGER_MANUAL");
             output.flush();
-            output.close();
+//            output.close();
 //            socket.close();
+            Log.i("Manual Trigger","triggered");
             return true;
         }catch (Exception e){
             Log.e("Manual Trigger",e.toString());
@@ -57,26 +68,32 @@ public class TCPController implements Runnable{
         Socket socket;
         DBController db = DBController.getInstance();
         while(true){
-            try {
-                if(server_socket == null ){
+//            wait(100);
+            try{
+                if(client_socket == null || client_socket.isClosed()){
                     try {
-                        server_socket = new ServerSocket(server_port);
+                        client_socket = new Socket(pump_address,pump_port);
+//                        client_socket.connect();
                     }catch(IOException e){
-                        e.printStackTrace();
+//                        e.printStackTrace();
                     }
                 }else{
 
-                    socket = server_socket.accept();
-                    pump_address = socket.getInetAddress();
-                    Log.i("Socket run",pump_address.toString());
+//                    socket = server_socket.accept();
+//                    pump_address = socket.getInetAddress();
+//                    Log.i("Socket run",pump_address.toString());
 //                    Log.i("Socket run",socket.getInetAddress().toString());
-                    input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    while (socket.isConnected()) {
+                    input = new BufferedReader(new InputStreamReader(client_socket.getInputStream()));
+                    boolean disconnect = false;
+                    while (!client_socket.isClosed() &&  !disconnect) {
                         String message = input.readLine();
                         if(message != null) {
                             Log.i("Loop", message);
                         }else{
                             Log.i("Loop", "null");
+                            input.close();
+                            client_socket.close();
+                            disconnect = true;
                         }
                         if (message != null && message.length() > 0) {
                             String[] split_msg = message.split(" ");
@@ -117,8 +134,8 @@ public class TCPController implements Runnable{
                         }
                     }
                 }
-            }catch(IOException e){
-                e.printStackTrace();
+            }catch(Exception e){
+//                e.printStackTrace();
             }
         }
     }

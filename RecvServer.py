@@ -14,20 +14,14 @@ def client_thread(socket):
     print(socket.recv(1024).decode())
 addr = ""
 count = 0
+clientsocket = None
+(clientsocket, address) = serversocket.accept()
+addr = address
 while True:
     # accept connections from outside
-    (clientsocket, address) = serversocket.accept()
-    addr = address
+    # if(clientsocket == None)
+
 
     # now do something with the clientsocket
     # in this case, we'll pretend this is a threaded server
     client_thread(clientsocket)
-    # ct.run()
-    count += 1
-    if(count >= 30):
-        print("MANUAL TRIGGER")
-        count = 0
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((addr[0],5554))
-        s.send(b"TRIGGER_MANUAL")
-        s.close()

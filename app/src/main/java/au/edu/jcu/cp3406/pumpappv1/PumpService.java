@@ -26,7 +26,7 @@ public class PumpService extends Service {
     public void onCreate() {
         super.onCreate();
         db_controller = new DBController(this);
-        tcp_controller = new TCPController(5000,5002);
+        tcp_controller = new TCPController("10.0.2.2",5002);
     }
 
     @Override

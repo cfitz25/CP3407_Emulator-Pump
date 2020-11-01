@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         db = new DBController(this);
-        tcp = new TCPController(5000,5002);
+        tcp = new TCPController("10.0.2.2",5002);
         Thread thread = new Thread(tcp);
         thread.start();
 
