@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                     int old_month = currentLocalDateTime.getMonthValue();;
                     Long older_time;
                     int i =0;
-                    while(day == old_day && month == old_month){
+                    while(day == old_day && month == old_month && i < vals.size()){
                         older_time = (Long) vals.get(i).get(2);
                         olderLocalDateTime = LocalDateTime.ofEpochSecond(older_time,0,ZoneOffset.UTC);
                         old_day = olderLocalDateTime.getDayOfMonth();
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                     insulinTodayTV.setText(String.valueOf(sum));
                 }
                 vals = db.getIssueEntries();
-                if(vals.size() >0){
+                if(vals.size() >1){
                     Long millis = (Long) vals.get(0).get(2);
                     String issue = (String) vals.get(0).get(3);
                     LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(millis,0,ZoneOffset.UTC);

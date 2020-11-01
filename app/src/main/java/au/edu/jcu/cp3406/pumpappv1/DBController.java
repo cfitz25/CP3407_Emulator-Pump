@@ -172,7 +172,7 @@ public class DBController {
         private static final String INFO_TABLE_NAME = "info_table";   // Table Name
         private static final String ISSUE_TABLE_NAME = "issue_table";   // Table Name
         private static final String INJECTION_TABLE_NAME = "injection_table";   // Table Name
-        private static final int DATABASE_Version = 2;    // Database Version
+        private static final int DATABASE_Version = 3;    // Database Version
         private static final String TIME="time";     // Column I (Primary Key)
         private static final String BLOOD_ENTRY="blood_entry";
         private static final String DEVICE="device";

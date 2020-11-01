@@ -29,25 +29,24 @@
             android:paddingTop="30dp">
 
 
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:paddingTop="10dp"
-                android:text="first name: John"/>
+                android:text="First Name: John"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="last name: Smith"/>
+                android:text="Last Name: Smith"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="gender: Male"/>
+                android:text="Gender: Male"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
