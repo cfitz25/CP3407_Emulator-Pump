@@ -1,5 +1,6 @@
 import time
 import datetime
+import random
 start_time = time.time()
 last_time = 0
 TIME_NOW = 0
@@ -8,8 +9,8 @@ time_multiplier = 5
 class Emulator:
     def __init__(self, name):
         self.start_time = time.time()
-        self.last_time = 0
-        self.TIME_NOW = 0
+        self.last_time = self.start_time
+        self.TIME_NOW = self.start_time
         self.time_diff = 0
         self.time_multiplier = 5
         self.display_print = True
@@ -25,18 +26,21 @@ class Emulator:
         self.blood_conductivity = 0.5
         self.insulin_count = 0
         self.blood_sugar = 20
-
+        self.insulin_active = 0
         self.count = 0
 
     def bodyCalc(self):
-        multiplier = self.time_diff
-        
-        self.blood_sugar += (0.003*self.blood_sugar - 0.5*self.insulin_count)*0.1
-        self.insulin_count -= 1
-        if(self.blood_sugar < 0):
-            self.blood_sugar = 0
+        # multiplier = self.time_diff
+        self.insulin_active += 0.1
+        self.insulin_count -= 0.1
         if(self.insulin_count <= 0):
             self.insulin_count = 0
+            self.insulin_active = 0
+        self.blood_sugar += (0.006*self.blood_sugar - 0.5*self.insulin_active)*0.03
+        
+        if(self.blood_sugar < 0):
+            self.blood_sugar = 0
+
         self.count += 1
         if(self.count > 5):
             self.print("BLOOD SUGAR",str(self.blood_sugar)+" "+str(self.insulin_count))
@@ -50,38 +54,39 @@ class Emulator:
 
 
     def run(self):
-        self.TIME_NOW = time.time()
-        self.time_diff = self.TIME_NOW - self.start_time 
+        self.TIME_NOW += 1
+        #self.print("TIME",str(self.TIME_NOW-self.start_time))
+        self.time_diff = self.TIME_NOW - self.last_time
         # print(self.time_diff)
         if self.time_diff < 60:
-            self.TIME_NOW = time.time()
-            self.time_diff = self.TIME_NOW - self.start_time
+            # self.TIME_NOW = time.time()
+            # self.time_diff = self.TIME_NOW - self.start_time
             self.bodyCalc()
-            self.needle_connected = not(self.time_diff > 45 and self.time_diff < 50)
+            self.needle_connected = random.randint(0,100) < 80
             
-            self.reservoir_connected = not(self.time_diff > 55)
+            self.reservoir_connected = random.randint(0,100) < 80
         else:
-            self.start_time = self.TIME_NOW
+            self.last_time = self.TIME_NOW
         if(self.reservoir_level <= 0):
             self.reservoir_level = 100
 
     def getTime(self):
-        global TIME_NOW
-        global last_time
-        # modified time so its all relative to the start of the program, makes it easier to read and understand
-        original_time = (time.time() - self.start_time)
-        # get the time difference between last time and this time, then set the new last_time
-        tmp_time = (original_time - last_time)
-        last_time = original_time
-        # apply multiplier to allow for faster simulation rate
-        tmp_time *= self.time_multiplier
-        # add modified time difference to TIME_NOW as it represents the emulators time
-        TIME_NOW = TIME_NOW + tmp_time
+        # # global TIME_NOW
+        # # global last_time
+        # # modified time so its all relative to the start of the program, makes it easier to read and understand
+        # original_time = (time.time() - self.start_time)
+        # # get the time difference between last time and this time, then set the new last_time
+        # tmp_time = (original_time - last_time)
+        # last_time = original_time
+        # # apply multiplier to allow for faster simulation rate
+        # tmp_time *= self.time_multiplier
+        # # add modified time difference to TIME_NOW as it represents the emulators time
+        # TIME_NOW = TIME_NOW + tmp_time
 
-        return TIME_NOW
+        return self.TIME_NOW
 
     def getDatetime(self,time):
-        dt = datetime.datetime.fromtimestamp(time + self.start_time)
+        dt = datetime.datetime.fromtimestamp(time)
         return dt
 
     # Emulator -> Program
