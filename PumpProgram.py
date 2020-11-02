@@ -86,7 +86,7 @@ class PumpProgram:
         #     return False
         message += "\r\n"
         print(message)
-        self.clientsocket.send(message.encode(),socket.MSG_DONTWAIT)
+        self.clientsocket.send(message.encode())
         return True
     def mainLoop(self):
         self.count_10_60 += 1
@@ -95,7 +95,7 @@ class PumpProgram:
         # print(self.count_5,self.count_30,self.count_10_60)
         reconnect = False
         try:
-            self.clientsocket.send("",socket.MSG_DONTWAIT);
+            self.clientsocket.send("");
         except:
             reconnect = True
         if(reconnect):
