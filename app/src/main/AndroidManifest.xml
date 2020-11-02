@@ -15,7 +15,7 @@
         <activity
             android:name=".ArrayActivity"
             android:label="@string/title_activity_array"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme"></activity>
 
         <service android:name=".PumpService" />
 
