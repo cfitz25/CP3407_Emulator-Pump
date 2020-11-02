@@ -251,6 +251,7 @@ class PumpProgram:
         for i in range(self.MAX_BLOOD_SUGAR):
             message_str += "  ["+str(i)+"] "+str(self.blood_sugar_levels[i])
         self.e.print("Blood", message_str)
+        self.e.print("Total Insulin Today", str(self.total_insulin_today))
         self.e.print("Blood", "RoC: "+str(rate_of_change1)+", "+str(rate_of_change2))
         #if blood sugar is above safe levels and the blood sugar level is increasing at an increasing rate then inject insulin
         if(blood_sugar >= self.SAFE_SUGAR_LEVEL and rate_of_change1 > 0 and rate_of_change1 > rate_of_change2):
