@@ -37,7 +37,7 @@ class PumpProgram:
     MAX_MESSAGES = 5
     message_ind = 0
     trigger_manual = False
-    
+    current_date = None
 
 
 
@@ -46,6 +46,7 @@ class PumpProgram:
         self.count_30 = 0
         self.count_10_60 = 0
         self.count_5 = 0
+        self.current_date = self.e.getDatetime( self.e.getTime())
         self.clientsocket = None
         self.start_server(5002)
         return
@@ -85,7 +86,7 @@ class PumpProgram:
         #     return False
         message += "\r\n"
         print(message)
-        self.clientsocket.send(message.encode())
+        self.clientsocket.send(message.encode(),socket.MSG_DONTWAIT)
         return True
     def mainLoop(self):
         self.count_10_60 += 1
@@ -106,6 +107,14 @@ class PumpProgram:
             self.recvProcess(self.clientsocket)
         except Exception as e:
             print("recv issue",e)
+
+        current_day = self.current_date.date().day
+        new_day = self.e.getDatetime(self.e.getTime()).date().day
+        if(new_day != current_day):
+            self.total_insulin_today = 0
+            self.current_date = self.e.getDatetime(self.e.getTime())
+            self.e.print("Day Reset","Resetting")
+            # time.sleep(400)
         #run if it has been atleast 30 seconds since last run
         if(self.count_5 >= 5):
             self.count_5 = 0
@@ -313,7 +322,7 @@ class PumpProgram:
 
         #trigger alarm
         self.e.alarmSetState(True)
-        time.sleep(0.5)
+        time.sleep(0.05)
         self.e.alarmSetState(False)
         self.e.print("Issue Log",issue)
         
@@ -360,7 +369,7 @@ e.display_print = False
 while(True):
     p.mainLoop()
     e.run()
-    time.sleep(1/20)
+    time.sleep(1/200)
 
 # p.send("Test 1")
 # p.send("Test 2")
