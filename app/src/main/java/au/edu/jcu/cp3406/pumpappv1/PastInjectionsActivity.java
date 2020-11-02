@@ -36,16 +36,18 @@ public class PastInjectionsActivity extends AppCompatActivity {
         LocalDateTime localDateTime;
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String formattedDate;
-        for (int i =0; i <vals.size(); i++){
-            secs = (Long) vals.get(i).get(2);
-            insulin= (Long) vals.get(i).get(3);
-            localDateTime = LocalDateTime.ofEpochSecond(secs,0, ZoneOffset.UTC);
-            formattedDate = localDateTime.format(dateTimeFormatter);
-            new_string = String.format("%s - INSULIN: %s mL", formattedDate, insulin);
-            entry_list.add(new_string);
+        if (vals.size() > 1) {
+            for (int i = 0; i < vals.size(); i++) {
+                secs = (Long) vals.get(i).get(2);
+                insulin = (Long) vals.get(i).get(3);
+                localDateTime = LocalDateTime.ofEpochSecond(secs, 0, ZoneOffset.UTC);
+                formattedDate = localDateTime.format(dateTimeFormatter);
+                new_string = String.format("%s - INSULIN: %s mL", formattedDate, insulin);
+                entry_list.add(new_string);
+            }
+            ListView listView = findViewById(R.id.InsulinListView);
+            ArrayAdapter arrayAdapter = new ArrayAdapter(this, R.layout.activity_array, R.id.textView, entry_list);
+            listView.setAdapter(arrayAdapter);
         }
-        ListView listView = findViewById(R.id.InsulinListView);
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this,R.layout.activity_array,R.id.textView, entry_list);
-        listView.setAdapter(arrayAdapter);
     }
 }

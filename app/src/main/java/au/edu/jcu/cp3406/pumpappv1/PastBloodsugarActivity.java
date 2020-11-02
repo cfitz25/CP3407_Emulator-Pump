@@ -41,17 +41,19 @@ public class PastBloodsugarActivity extends AppCompatActivity {
         LocalDateTime localDateTime;
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String formattedDate;
-        for (int i =0; i <vals.size(); i++){
-            secs = (Long) vals.get(i).get(2);
-            blood = (Long) vals.get(i).get(3);
-            localDateTime = LocalDateTime.ofEpochSecond(secs,0, ZoneOffset.UTC);
-            formattedDate = localDateTime.format(dateTimeFormatter);
-            new_string = String.format("%s - BLOOD: %s cc/L",formattedDate,blood);
-            entry_list.add(new_string);
+        if (vals.size()>1) {
+            for (int i = 0; i < vals.size(); i++) {
+                secs = (Long) vals.get(i).get(2);
+                blood = (Long) vals.get(i).get(3);
+                localDateTime = LocalDateTime.ofEpochSecond(secs, 0, ZoneOffset.UTC);
+                formattedDate = localDateTime.format(dateTimeFormatter);
+                new_string = String.format("%s - BLOOD: %s cc/L", formattedDate, blood);
+                entry_list.add(new_string);
+            }
+            ListView listView = findViewById(R.id.BloodListView);
+            ArrayAdapter arrayAdapter = new ArrayAdapter(this, R.layout.activity_array, R.id.textView, entry_list);
+            listView.setAdapter(arrayAdapter);
         }
-        ListView listView = findViewById(R.id.BloodListView);
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this,R.layout.activity_array,R.id.textView, entry_list);
-        listView.setAdapter(arrayAdapter);
 
 
 
