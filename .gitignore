@@ -16,3 +16,4 @@ __pycache__/Emulator.cpython-37.pyc
 .gradle
 .idea
 app
+local.properties
